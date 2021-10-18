@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+     body {
+			 font-size: 17px;
+			 font-family: arial;
+			 background: #f4f4f4;
+			 line-height: 1.5em;
+		 }
+     #container {
+			 width:90%;
+			 margin:auto;
+			 padding:10px;
+		 }
+     #set {
+       margin-top:10px;
+       margin-bottom:10px;
+       background: white;
+       padding:17px;
+       width:100%;
+       border:solid 1px;
+       text-align:center;
+     }
+     .Button {
+       padding:10px;
+       width:7%;
+       margin-right: 10px;
+     }
+
+    </style>
+  </head>
+  <body>
+    <div id="container">
+
+  		<h2>Play with Sets</h2>
+
+      <input class = "Button" type="button" id="A" value = "A">
+      <input class = "Button" type="button" id="B" value = "B">
+      <input class = "Button" type="button" id="Union" value = "&#8746">
+      <input class = "Button" type="button" id="Intersection" value = "&#8745;">
+      <input class = "Button" type="button" id="Compl" value = "'">
+      <input class = "Button" type="button" id="leftPar" value = "(">
+      <input class = "Button" type="button" id="rightPar" value = ")">
+      <input class = "Button" type="button" id="EmptySet" value = "&#8709">
+      <input class = "Button" type="button" id="Delete" value = "del">
+      <div class="text-box" id="set"></div>
+      <input class = "Button" type="submit" id="Submit" value = "Submit">
+      <input class = "Button" type="button" id="Reset" value = "Reset">
+    </div>
+
+      <script src="functions.js"></script>
+  </body>
+</html>
