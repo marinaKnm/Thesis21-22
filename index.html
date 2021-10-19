@@ -2,41 +2,18 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Θεωρία Συνόλων</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-     body {
-			 font-size: 17px;
-			 font-family: arial;
-			 background: #f4f4f4;
-			 line-height: 1.5em;
-		 }
-     #container {
-			 width:90%;
-			 margin:auto;
-			 padding:10px;
-		 }
-     #set {
-       margin-top:10px;
-       margin-bottom:10px;
-       background: white;
-       padding:17px;
-       width:100%;
-       border:solid 1px;
-       text-align:center;
-     }
-     .Button {
-       padding:10px;
-       width:7%;
-       margin-right: 10px;
-     }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <div id="container">
 
-  		<h2>Play with Sets</h2>
+  		<h2>Πράξεις Συνόλων</h2>
+      <p>Ένα σύνολο ορίζεται ως μία συλλογή αντικειμένων τα οποία είναι μοναδικά και μη διατεταγμένα. Η θεωρία πιθανοτήτων κάνει εκτεταμένη χρήση 
+        συνόλων και μαθηματικών πράξεων μεταξύ συνόλων. Παρακάτω μπορείτε να δοκιμάσετε διάφορες πράξεις μεταξύ συνόλων και να παρατηρήσετε την
+        αντίστοιχη απεικόνιση.
+      </p>
 
       <input class = "Button" type="button" id="A" value = "A">
       <input class = "Button" type="button" id="B" value = "B">
@@ -48,8 +25,9 @@
       <input class = "Button" type="button" id="EmptySet" value = "&#8709">
       <input class = "Button" type="button" id="Delete" value = "del">
       <div class="text-box" id="set"></div>
+      <div class="error_msg"></div>
       <input class = "Button" type="submit" id="Submit" value = "Submit">
-      <input class = "Button" type="button" id="Reset" value = "Reset">
+      <input class = "Button" type="button" id="Reset" value = "Reset"> 
     </div>
 
       <script src="functions.js"></script>
