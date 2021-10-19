@@ -97,6 +97,7 @@ $(document).ready(function(){   //make sure the document is already loaded
       //make sure that after a left parenthesis we get: ', union sign, intersection sign
       if(prev === ')' && (inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === "\u2205")) {
         showErrorMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται \u222A, \u2229, '");
+        return;
       }
  
       //make sure that left parethesis and right parenthesis are balanced and paired
