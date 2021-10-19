@@ -55,47 +55,53 @@ $(document).ready(function(){   //make sure the document is already loaded
     $('.error_msg').fadeIn(3000);
     $('.error_msg').fadeOut(3000);
   }
-var cnt = 0;  ////////////////
+
   //make sure this is not an ivalid input
   $('#Submit').click(function() {
     let inputStr = $('.text-box').html();      //get the text from the text-box
-    cnt++;  //////////////////////
+
     //if input starts with union or intersection or ' or ) accordingly show error message 
     switch (inputStr[0]) {
       case '\u222A':
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
-        break;
+        return;
       case '\u2229':
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
-        break;
+        return;
       case "'":
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
-        break;
+        return;
       case ')':
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');    
-        break;
-      default:
-        console.log('Default action'); 
+        return;
     }
 
     let prev="";
     let stack = "";
-    console.log(inputStr);
     for(let i=0; i<inputStr.length; i++) {      //check character by character
 
       //make sure that 2 sets are not given consequently
       if ((prev === 'A' || prev === 'B') && (inputStr[i] === 'A' || inputStr[i] === 'B')) {
+        // console.log('prev= '+prev);
+        // console.log('current= ' +inputStr[i]);
         showErrorMessage('Μη έγκυρη πρόταση. Δόθηκαν δύο σύνολα στη σειρά.');
+        return;
       }
 
+      //make sure that 2 union or intersection signs are not given consequently
       if ((prev === '\u222A' || prev === '\u2229') && (inputStr[i] === '\u2229' || inputStr[i] === '\u222A')) {
         showErrorMessage('Μη έγκυρη πρόταση. Δόθηκε ' +prev+ ' και αναμένεται A, Β, (, ' + '\u2205');
+        return;
       }
-      // console.log('Character is: ' + inputStr[i]);
+
+      //make sure that after a left parenthesis we get: ', union sign, intersection sign
+      if(prev === ')' && (inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === "\u2205")) {
+        showErrorMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται \u222A, \u2229, '");
+      }
+ 
       //make sure that left parethesis and right parenthesis are balanced and paired
       if (inputStr[i] === '(') {
         stack = stack.concat(stack, '(');  //push left parenthesis into the stack
-        console.log(stack);
       }
       if(inputStr[i] === ')') {
         stack = stack.substring(0, stack.length - 1); //if right parenthesis is found pop from stack
@@ -104,10 +110,8 @@ var cnt = 0;  ////////////////
       prev = inputStr[i];
     }
 
-    // console.log(stack);
     if(stack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
       showErrorMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.');
-      console.log(cnt);
     }
 
   });
