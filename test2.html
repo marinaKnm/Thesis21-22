@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- <script data-require="d3@3.5.3" data-semver="3.5.3" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script> -->
+  <script src="https://d3js.org/d3.v7.min.js">  </script>
+</head>
+
+<body>
+  <script>
+    var x1 = 100,
+      y1 = 100,
+      x2 = 150,
+      y2 = 150,
+      r = 70;
+
+    var svg = d3.select('body')
+      .append('svg')
+      .attr('width', 600)
+      .attr('height', 600);
+
+    svg.append('circle')
+      .attr('cx', x1)
+      .attr('cy', y1)
+      .attr('r', r)
+      .style('fill', 'steelblue');
+
+    svg.append('circle')
+      .attr('cx', x2)
+      .attr('cy', y2)
+      .attr('r', r)
+      .style('fill', 'orange');
+
+    var interPoints = intersection(x1, y1, r, x2, y2, r);
+
+    svg.append("g")
+      .append("path")
+      .attr("d", function() {
+        return "M" + interPoints[0] + "," + interPoints[2] + "A" + r + "," + r +
+          " 0 0,1 " + interPoints[1] + "," + interPoints[3]+ "A" + r + "," + r +
+          " 0 0,1 " + interPoints[0] + "," + interPoints[2];
+      })
+      .style('fill', 'red');
+
+
+    function intersection(x0, y0, r0, x1, y1, r1) {
+      var a, dx, dy, d, h, rx, ry;
+      var x2, y2;
+
+      /* dx and dy are the vertical and horizontal distances between
+       * the circle centers.
+       */
+      dx = x1 - x0;
+      dy = y1 - y0;
+
+      /* Determine the straight-line distance between the centers. */
+      d = Math.sqrt((dy * dy) + (dx * dx));
+
+      /* Check for solvability. */
+      if (d > (r0 + r1)) {
+        /* no solution. circles do not intersect. */
+        return false;
+      }
+      if (d < Math.abs(r0 - r1)) {
+        /* no solution. one circle is contained in the other */
+        return false;
+      }
+
+      /* 'point 2' is the point where the line through the circle
+       * intersection points crosses the line between the circle
+       * centers.
+       */
+
+      /* Determine the distance from point 0 to point 2. */
+      a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d);
+
+      /* Determine the coordinates of point 2. */
+      x2 = x0 + (dx * a / d);
+      y2 = y0 + (dy * a / d);
+
+      /* Determine the distance from point 2 to either of the
+       * intersection points.
+       */
+      h = Math.sqrt((r0 * r0) - (a * a));
+
+      /* Now determine the offsets of the intersection points from
+       * point 2.
+       */
+      rx = -dy * (h / d);
+      ry = dx * (h / d);
+
+      /* Determine the absolute intersection points. */
+      var xi = x2 + rx;
+      var xi_prime = x2 - rx;
+      var yi = y2 + ry;
+      var yi_prime = y2 - ry;
+
+      return [xi, xi_prime, yi, yi_prime];
+    }
+  </script>
+</body>
+
+</html>

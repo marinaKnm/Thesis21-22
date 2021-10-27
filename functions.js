@@ -1,29 +1,67 @@
 $(document).ready(function(){   //make sure the document is already loaded
+/*
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  console.log(ctx);
+
+  ctx.fillStyle = "#e4dada";//"yellow";
+  ctx.lineWidth = 3;
+
+  var circle1 = {
+      x: 250,
+      y: 250,
+      r: 150,
+      color: "green"
+  };
+  var circle2 = {
+      x: 450,
+      y: 250,
+      r: 150,
+      color: "orange"
+  };
+
+  ctx.beginPath();
+  ctx.arc(circle1.x, circle1.y, circle1.r, 0, 2 * Math.PI, false);
+  ctx.strokeStyle = circle1.color;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(circle2.x, circle2.y, circle2.r, 0, 2 * Math.PI, false);
+  ctx.strokeStyle = circle2.color;
+  ctx.stroke(); */
+  var x1 = 250,
+      y1 = 250,
+      r1 = 150, //150
+      x2 = 450,
+      y2 = 250,
+      r2 = 80; //150
 
   var canvas = d3.select("body")
-               .append("svg") //so we append the svg element to our page
-               //now let's give some properties
-               .attr("width", 725) //when we are styling svg elements, we use attr method
-               .attr("height", 500) //instead of style method
-               .style("margin-left","400px")
-               .style("background-color","#e4dada")
-               .style("border","solid 3px");
+             .append("svg") //so we append the svg element to our page
+             //now let's give some properties
+             .attr("width", 725) //when we are styling svg elements, we use attr method
+             .attr("height", 500) //instead of style method
+             .style("margin-left","400px")
+             .style("background-color","#e4dada")
+             .style("border","solid 3px");
   //Let's start by creating a circle:
-   var circle1 = canvas.append("circle")
-                .attr("cx", 250) //we want to give it a horizontal position
-                .attr("cy", 250)
-                .attr("r", 150) //radius
-                .attr("stroke","green")
+  var circle1 = canvas.append("circle")
+                .attr("cx", x1) //we want to give it a horizontal position
+                .attr("cy", y1)
+                .attr("r", r1) //radius
+                .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
                 .attr("stroke-width",3)
                 .attr("fill","none");
 
-   var circle2 = canvas.append("circle")
-                .attr("cx", 450) //we want to give it a horizontal position
-                .attr("cy", 250)
-                .attr("r", 150) //radius
-                .attr("stroke","orange")
+  var circle2 = canvas.append("circle")
+                .attr("cx", x2) //we want to give it a horizontal position
+                .attr("cy", y2)
+                .attr("r", r2) //radius
+                .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
                 .attr("stroke-width",3)
                 .attr("fill","none");
+
+  var interPoints = intersection(x1, y1, r1, x2, y2, r2);
 
   // when you hover over a button change colour to pink
   $(".Button").hover(function() {
@@ -79,6 +117,92 @@ $(document).ready(function(){   //make sure the document is already loaded
     $('.error_msg').html(str);
     $('.error_msg').fadeIn(3000);
     $('.error_msg').fadeOut(3000);
+  }
+
+  function intersection(x0, y0, r0, x1, y1, r1) {
+      var a, dx, dy, d, h, rx, ry;
+      var x2, y2;
+
+      /* dx and dy are the vertical and horizontal distances between
+       * the circle centers.
+       */
+      dx = x1 - x0;
+      dy = y1 - y0;
+
+      /* Determine the straight-line distance between the centers. */
+      d = Math.sqrt((dy * dy) + (dx * dx));
+
+      /* Check for solvability. */
+      if (d > (r0 + r1)) {
+        /* no solution. circles do not intersect. */
+        return false;
+      }
+      if (d < Math.abs(r0 - r1)) {
+        /* no solution. one circle is contained in the other */
+        // if (r0 < r1) {
+        //   circle1.attr("fill","lightblue");
+        // }
+        // else {
+        //   circle2.attr("fill","lightblue");
+        // }
+        return -1;
+      }
+
+      /* 'point 2' is the point where the line through the circle
+       * intersection points crosses the line between the circle
+       * centers.
+       */
+
+      /* Determine the distance from point 0 to point 2. */
+      a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d);
+
+      /* Determine the coordinates of point 2. */
+      x2 = x0 + (dx * a / d);
+      y2 = y0 + (dy * a / d);
+
+      /* Determine the distance from point 2 to either of the
+       * intersection points.
+       */
+      h = Math.sqrt((r0 * r0) - (a * a));
+
+      /* Now determine the offsets of the intersection points from
+       * point 2.
+       */
+      rx = -dy * (h / d);
+      ry = dx * (h / d);
+
+      /* Determine the absolute intersection points. */
+      var xi = x2 + rx;
+      var xi_prime = x2 - rx;
+      var yi = y2 + ry;
+      var yi_prime = y2 - ry;
+
+      return [xi, xi_prime, yi, yi_prime];
+    }
+
+  function fill_intersection(color) {
+
+    if (interPoints == -1) {
+      if (r1 < r2) {
+        circle1.attr("fill",color);
+      }
+      else {
+        circle2.attr("fill",color);
+      }
+    }
+    else {
+      canvas.append("g")
+        .append("path")
+        .attr("d", function() {
+          return "M" + interPoints[0] + "," + interPoints[2] + "A" + r2 + "," + r2 +
+            " 0 0,1 " + interPoints[1] + "," + interPoints[3]+ "A" + r1 + "," + r1 +
+            " 0 0,1 " + interPoints[0] + "," + interPoints[2];
+        })
+        .style('fill', color)
+        .style("stroke","black");
+
+    }
+
   }
 
   //make sure this is not an ivalid input
@@ -141,9 +265,31 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     //Now we'll visualize user's set in the Venn diagram
-    //d3.select('#set'+i).style('fill',fill);
-    circle1.attr("fill","pink");
-    circle2.attr("fill","pink");
+
+    //  INTERSECTION:
+    // fill_intersection("lightblue");
+    // //////////////////////////////////////////////////////////////////////
+    //ONLY SET A:
+    // circle1.attr("fill","lightblue");
+    // fill_intersection("#e4dada");
+    // //ONLY SET B:
+    // circle2.attr("fill","lightblue");
+    // fill_intersection("#e4dada");
+    /////////////
+    // UNION:
+    // circle1.attr("fill","lightblue");
+    // circle2.attr("fill","lightblue");
+    // fill_intersection("lightblue");
+    /////////////
+    // DEIGMATIKOS XWROS:
+    // canvas.style("background-color","lightblue");
+    /////////////
+    // MONO DEIGMATIKOS XWROS:
+     canvas.style("background-color","lightblue");
+     circle1.attr("fill","#e4dada");
+     circle2.attr("fill","#e4dada");
+     fill_intersection("#e4dada");
+
   });
 
 });

@@ -18,6 +18,18 @@ body {
     border:solid 1px;
     text-align:center;
 }
+
+canvas {
+    border: 1px solid #807d82;
+    margin: auto;
+    margin-top: 10px;
+    margin-left: 400px;
+}
+
+/* circle {
+  cursor: move;
+} */
+
 .Button {
     padding:10px;
     width:7%;
