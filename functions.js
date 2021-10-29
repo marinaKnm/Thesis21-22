@@ -205,16 +205,177 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   }
 
+
+
+  function findComplement(index, apostrophes) {
+
+    let array;
+    array = stack.deleteLastpaintedArea();
+
+    if (apostrophes[index] === 1) { //if we have complement
+      for (let j = 0; j < array.length; j++) {
+        if (array[j] === 0) {
+          array[j] = 1;
+        }
+        else array[j] = 0;
+      }
+    }
+
+    return array;
+
+  }
+
+
+
+  class Stack {
+    constructor() {
+      this.paintedAreaStack = new Array();
+      this.operatorsStack = new Array();
+    }
+    insertpaintedArea(paintedArea) {
+      this.paintedAreaStack.push(paintedArea);
+    }
+    deleteLastpaintedArea() {
+      return this.paintedAreaStack.pop();
+    }
+    insertoperator(operator) {
+      this.operatorsStack.push(operator);
+    }
+    deleteLastoperator() {
+      return this.operatorsStack.pop();
+    }
+  }
+
+
+  var stack = new Stack();
+
+
+  function myParser(inputStr) {
+
+    if (inputStr === 'A') {
+      stack.insertpaintedArea([1,0,1,0]);
+      return 0;
+    } else if (inputStr === 'B') {
+      stack.insertpaintedArea([0,1,1,0]);
+      return 0;
+    } else if (inputStr === '\u2205') { //empty set
+      stack.insertpaintedArea([0,0,0,0]);
+      return 0;
+    }
+
+
+    let flag = 0;
+    let start;
+    let terms = new Array();
+    let operators = new Array();
+    let apostrophes = new Array(); // (bit array) keep indexes of terms that an apostrophe is following.
+
+    //Reading character by character in order to find the terms and the operators.
+    for (let i = 0; i < inputStr.length; i++) {
+
+      //looking for a whole expression in parenthesis
+      if (inputStr[i] === '(') {
+        flag++;
+        if (flag === 1) {
+          start = i+1;
+        }
+      }
+      else if (inputStr[i] === ')') {
+        flag--;
+        if (flag === 0) {
+           terms.push(inputStr.substring(start, i));
+           if (inputStr[i+1] === "'") {
+             apostrophes.push(1);
+           }
+           else apostrophes.push(0);
+        }
+      }
+
+      //separated term A or B
+      else if ((inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === '\u2205')&&(flag === 0)) {
+        terms.push(inputStr[i]);
+        if (inputStr[i+1] === "'") {
+          apostrophes.push(1);
+        }
+        else apostrophes.push(0);
+      }
+      //append current operator to operators array
+      else if ((inputStr[i] === '\u222A' || inputStr[i] === '\u2229')&&(flag === 0)) {
+        operators.push(inputStr[i]);
+      }
+    }
+
+    let marked = new Array(operators.length); //bit array of operators that have been used
+    for (let i = 0; i < marked.length; i++) {
+      marked[i] = 0;
+    }
+
+
+    let array1, array2;
+
+    for (let i = 0; i < operators.length; i++) {
+
+      if (operators[i] === '\u2229') { //if operator is intersect
+        marked[i] = 1; //so we know that this operator has been used.
+
+        stack.insertoperator(operators[i]);
+
+        myParser(terms[i]);
+        myParser(terms[i+1]);
+
+        array2 = findComplement(i+1, apostrophes);
+        array1 = findComplement(i, apostrophes);
+
+        stack.deleteLastoperator();
+         // console.log(array1);
+         // console.log(array2);
+
+        //put the result of intersect operator at array1
+        for (let j = 0; j < array1.length; j++) {
+          array1[j] = array1[j] + array2[j];
+          if (array1[j] === 2) {
+            array1[j] = 1;
+          } else array1[j] = 0;
+        }
+
+        stack.insertpaintedArea(array1);
+         // console.log(array1);
+      }
+    }
+
+    for (let i = 0; i < operators.length; i++) {
+      if (operators[i] === '\u222A') { //if operator is union
+        if (operators[i-1] != '\u2229' || i === 0 || i === operators.length-1) { //if previous operator isn't intersect
+
+          if (i === operators.length-1) {
+            i++;
+          }
+          myParser(terms[i]);
+          array1 = findComplement(i, apostrophes);
+          stack.insertpaintedArea(array1);
+        }
+      }
+    }
+
+    // console.log(operators);
+    // console.log(marked);
+    // console.log(terms);
+    // console.log(operators);
+    // console.log(apostrophes);
+    //////////////////////////
+
+  }
+
   //make sure this is not an ivalid input
   $('#Submit').click(function() {
     let inputStr = $('.text-box').html();      //get the text from the text-box
 
     //if input starts with union or intersection or ' or ) accordingly show error message
     switch (inputStr[0]) {
-      case '\u222A':
+      case '\u222A':  //union
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
         return;
-      case '\u2229':
+      case '\u2229': //intersect
         showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
         return;
       case "'":
@@ -265,6 +426,8 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     //Now we'll visualize user's set in the Venn diagram
+    //mystr = "A2B1(A5B3(B1A)2A)1(S$D)1A";
+    myParser(inputStr);
 
     //  INTERSECTION:
     // fill_intersection("lightblue");
@@ -285,10 +448,10 @@ $(document).ready(function(){   //make sure the document is already loaded
     // canvas.style("background-color","lightblue");
     /////////////
     // MONO DEIGMATIKOS XWROS:
-     canvas.style("background-color","lightblue");
-     circle1.attr("fill","#e4dada");
-     circle2.attr("fill","#e4dada");
-     fill_intersection("#e4dada");
+     // canvas.style("background-color","lightblue");
+     // circle1.attr("fill","#e4dada");
+     // circle2.attr("fill","#e4dada");
+     // fill_intersection("#e4dada");
 
   });
 
