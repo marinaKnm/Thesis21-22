@@ -250,8 +250,10 @@ $(document).ready(function(){   //make sure the document is already loaded
   var stack = new Stack();
 
 
+  // a parser for the expression in order to find which area to paint on the canvas 
   function myParser(inputStr) {
 
+    //end of recursion if the expression is a set
     if (inputStr === 'A') {
       stack.insertpaintedArea([1,0,1,0]);
       return 0;
@@ -268,7 +270,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     let start;
     let terms = new Array();
     let operators = new Array();
-    let apostrophes = new Array(); // (bit array) keep indexes of terms that an apostrophe is following.
+    let apostrophes = new Array(); // (bit array) keeps indexes of terms that an apostrophe is following.
 
     //Reading character by character in order to find the terms and the operators.
     for (let i = 0; i < inputStr.length; i++) {
@@ -277,13 +279,13 @@ $(document).ready(function(){   //make sure the document is already loaded
       if (inputStr[i] === '(') {
         flag++;
         if (flag === 1) {
-          start = i+1;
+          start = i+1;  //keep the index that the expression starts from
         }
       }
       else if (inputStr[i] === ')') {
         flag--;
         if (flag === 0) {
-           terms.push(inputStr.substring(start, i));
+           terms.push(inputStr.substring(start, i));  //store as a whole term
            if (inputStr[i+1] === "'") {
              apostrophes.push(1);
            }
@@ -291,8 +293,8 @@ $(document).ready(function(){   //make sure the document is already loaded
         }
       }
 
-      //separated term A or B
-      else if ((inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === '\u2205')&&(flag === 0)) {
+      //term A, B or empty set
+      else if ((inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === '\u2205') && (flag === 0)) {
         terms.push(inputStr[i]);
         if (inputStr[i+1] === "'") {
           apostrophes.push(1);
@@ -300,12 +302,12 @@ $(document).ready(function(){   //make sure the document is already loaded
         else apostrophes.push(0);
       }
       //append current operator to operators array
-      else if ((inputStr[i] === '\u222A' || inputStr[i] === '\u2229')&&(flag === 0)) {
+      else if ((inputStr[i] === '\u222A' || inputStr[i] === '\u2229') && (flag === 0)) {
         operators.push(inputStr[i]);
       }
     }
 
-    let marked = new Array(operators.length); //bit array of operators that have been used
+    let marked = new Array(operators.length); //bit array of operators, marked[i]=1 => operators[i] has been used
     for (let i = 0; i < marked.length; i++) {
       marked[i] = 0;
     }
@@ -313,13 +315,15 @@ $(document).ready(function(){   //make sure the document is already loaded
 
     let array1, array2;
 
+    //calculate for every intersection
     for (let i = 0; i < operators.length; i++) {
 
-      if (operators[i] === '\u2229') { //if operator is intersect
-        marked[i] = 1; //so we know that this operator has been used.
+      if (operators[i] === '\u2229') { //if operator is an intersection
+        marked[i] = 1; //so that we know that this operator has been used
 
-        stack.insertoperator(operators[i]);
+        stack.insertoperator(operators[i]); //add operator into the stack
 
+        //recursive calls for the left and right terms of operator[i]
         myParser(terms[i]);
         myParser(terms[i+1]);
 
@@ -330,7 +334,7 @@ $(document).ready(function(){   //make sure the document is already loaded
          // console.log(array1);
          // console.log(array2);
 
-        //put the result of intersect operator at array1
+        //put the result of intersection operator at array1
         for (let j = 0; j < array1.length; j++) {
           array1[j] = array1[j] + array2[j];
           if (array1[j] === 2) {
@@ -343,9 +347,10 @@ $(document).ready(function(){   //make sure the document is already loaded
       }
     }
 
+    //calculate for the rest of the expressions (unions)
     for (let i = 0; i < operators.length; i++) {
-      if (operators[i] === '\u222A') { //if operator is union
-        if (operators[i-1] != '\u2229' || i === 0 || i === operators.length-1) { //if previous operator isn't intersect
+      if (operators[i] === '\u222A') { //if operator is a union
+        if (operators[i-1] != '\u2229' || i === 0 || i === operators.length-1) { //if previous operator isn't intersection
 
           if (i === operators.length-1) {
             i++;
@@ -392,8 +397,6 @@ $(document).ready(function(){   //make sure the document is already loaded
 
       //make sure that 2 sets are not given consequently
       if ((prev === 'A' || prev === 'B') && (inputStr[i] === 'A' || inputStr[i] === 'B')) {
-        // console.log('prev= '+prev);
-        // console.log('current= ' +inputStr[i]);
         showErrorMessage('Μη έγκυρη πρόταση. Δόθηκαν δύο σύνολα στη σειρά.');
         return;
       }
@@ -412,7 +415,7 @@ $(document).ready(function(){   //make sure the document is already loaded
 
       //make sure that left parethesis and right parenthesis are balanced and paired
       if (inputStr[i] === '(') {
-        stack = stack.concat(stack, '(');  //push left parenthesis into the stack
+        stack = stack + '(';
       }
       if(inputStr[i] === ')') {
         stack = stack.substring(0, stack.length - 1); //if right parenthesis is found pop from stack
@@ -420,14 +423,14 @@ $(document).ready(function(){   //make sure the document is already loaded
 
       prev = inputStr[i];
     }
-
+    
     if(stack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
       showErrorMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.');
     }
 
     //Now we'll visualize user's set in the Venn diagram
     //mystr = "A2B1(A5B3(B1A)2A)1(S$D)1A";
-    myParser(inputStr);
+    // myParser(inputStr);
 
     //  INTERSECTION:
     // fill_intersection("lightblue");
