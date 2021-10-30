@@ -107,10 +107,14 @@ $(document).ready(function(){   //make sure the document is already loaded
     let myInput = $('.text-box').html();      //get the text from the text-box
     myInput = myInput.substring(0, myInput.length - 1);     //remove the last character
     $('#set').text(myInput);      //show in the text-box
+    //result = [0,0,0,0];
+    stack.emptyStack();
   });
 
   $('#Reset').click(function() {
     $('.text-box').empty();     //delete the string
+    //result = [0,0,0,0];
+    stack.emptyStack();
   });
 
   function showErrorMessage(str) {
@@ -210,6 +214,7 @@ $(document).ready(function(){   //make sure the document is already loaded
   function findComplement(index, apostrophes) {
 
     let array;
+
     array = stack.deleteLastpaintedArea();
 
     if (apostrophes[index] === 1) { //if we have complement
@@ -226,6 +231,16 @@ $(document).ready(function(){   //make sure the document is already loaded
   }
 
 
+  function calc(terms, apostrophes, i) {
+
+    myParser(terms[i]);
+    let array1 = findComplement(i, apostrophes);
+    // console.log(array1);
+    stack.insertpaintedArea(array1);
+
+  }
+
+
 
   class Stack {
     constructor() {
@@ -238,6 +253,14 @@ $(document).ready(function(){   //make sure the document is already loaded
     deleteLastpaintedArea() {
       return this.paintedAreaStack.pop();
     }
+    isempty() {
+      if (this.paintedAreaStack.length === 0) {
+        return 0;
+      } else return 1;
+    }
+    emptyStack() {
+      this.paintedAreaStack.splice(0,this.paintedAreaStack.length);
+    }
     insertoperator(operator) {
       this.operatorsStack.push(operator);
     }
@@ -249,20 +272,21 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   var stack = new Stack();
 
+  //let result = [0, 0, 0, 0];
 
-  // a parser for the expression in order to find which area to paint on the canvas 
+  // a parser for the expression in order to find which area to paint on the canvas
   function myParser(inputStr) {
 
     //end of recursion if the expression is a set
     if (inputStr === 'A') {
       stack.insertpaintedArea([1,0,1,0]);
-      return 0;
+      return [1,0,1,0];
     } else if (inputStr === 'B') {
       stack.insertpaintedArea([0,1,1,0]);
-      return 0;
+      return [0,1,1,0];
     } else if (inputStr === '\u2205') { //empty set
       stack.insertpaintedArea([0,0,0,0]);
-      return 0;
+      return [0,0,0,0];
     }
 
 
@@ -307,11 +331,11 @@ $(document).ready(function(){   //make sure the document is already loaded
       }
     }
 
-    let marked = new Array(operators.length); //bit array of operators, marked[i]=1 => operators[i] has been used
-    for (let i = 0; i < marked.length; i++) {
+    //initialize array marked.
+    let marked = new Array();
+    for (let i = 0; i < terms.length; i++) {
       marked[i] = 0;
     }
-
 
     let array1, array2;
 
@@ -319,55 +343,134 @@ $(document).ready(function(){   //make sure the document is already loaded
     for (let i = 0; i < operators.length; i++) {
 
       if (operators[i] === '\u2229') { //if operator is an intersection
-        marked[i] = 1; //so that we know that this operator has been used
 
         stack.insertoperator(operators[i]); //add operator into the stack
 
         //recursive calls for the left and right terms of operator[i]
-        myParser(terms[i]);
-        myParser(terms[i+1]);
-
-        array2 = findComplement(i+1, apostrophes);
-        array1 = findComplement(i, apostrophes);
-
-        stack.deleteLastoperator();
-         // console.log(array1);
-         // console.log(array2);
-
-        //put the result of intersection operator at array1
-        for (let j = 0; j < array1.length; j++) {
-          array1[j] = array1[j] + array2[j];
-          if (array1[j] === 2) {
-            array1[j] = 1;
-          } else array1[j] = 0;
-        }
-
-        stack.insertpaintedArea(array1);
-         // console.log(array1);
-      }
-    }
-
-    //calculate for the rest of the expressions (unions)
-    for (let i = 0; i < operators.length; i++) {
-      if (operators[i] === '\u222A') { //if operator is a union
-        if (operators[i-1] != '\u2229' || i === 0 || i === operators.length-1) { //if previous operator isn't intersection
-
-          if (i === operators.length-1) {
-            i++;
-          }
+        if (marked[i] === 0) {
           myParser(terms[i]);
+          myParser(terms[i+1]);
+
+          marked[i] = 1;
+          marked[i+1] = 1;
+
+          array2 = findComplement(i+1, apostrophes);
           array1 = findComplement(i, apostrophes);
+
+          stack.deleteLastoperator();
+
+          //put the result of intersection operator at array1
+          for (let j = 0; j < array1.length; j++) {
+            array1[j] = array1[j] + array2[j];
+            if (array1[j] === 2) {
+              array1[j] = 1;
+            } else array1[j] = 0;
+          }
+
           stack.insertpaintedArea(array1);
+          console.log("marked = 0");
+          console.log(array1);
+        } else {
+          array1 = stack.deleteLastpaintedArea();
+          marked[i+1] = 1;
+
+          myParser(terms[i+1]);
+          array2 = findComplement(i+1, apostrophes);
+
+          stack.deleteLastoperator();
+
+          //put the result of intersection operator at array1
+          for (let j = 0; j < array1.length; j++) {
+            array1[j] = array1[j] + array2[j];
+            if (array1[j] === 2) {
+              array1[j] = 1;
+            } else array1[j] = 0;
+          }
+
+          stack.insertpaintedArea(array1);
+          console.log("marked = 1");
+          console.log(array1);
         }
       }
     }
 
-    // console.log(operators);
-    // console.log(marked);
-    // console.log(terms);
-    // console.log(operators);
-    // console.log(apostrophes);
-    //////////////////////////
+
+
+    for (let i = 0; i < marked.length; i++) {
+      if (marked[i] != 1) {
+        myParser(terms[i]);
+        array1 = findComplement(i, apostrophes);
+        stack.insertpaintedArea(array1);
+      }
+    }
+
+
+    let result = [0, 0, 0, 0];
+    let last;
+
+    while (stack.isempty() != 0) {
+
+      //if (!stack.isempty())/*(stack.length != 0)*/ {
+        last = stack.deleteLastpaintedArea();
+        if (typeof(last) == 'undefined') {
+          break;
+        }
+        console.log("last:",last);
+        for (let i = 0; i < result.length; i++) {
+          result[i] = result[i] + last[i];
+        }
+      //}
+      //else break;
+      console.log("evolution:");
+      console.log(result);
+    }
+
+
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] != 0) {
+        result[i] = 1;
+      }
+    }
+
+    console.log("Before:");
+    console.log(result);
+
+    stack.insertpaintedArea(result);
+    //return result;
+    //calculate for the rest of the expressions (unions)
+    // for (let i = 0; i < operators.length; i++) {
+    //   if (operators[i] === '\u222A') { //if operator is a union
+    //
+    //     if (i === 0) {    //if previous operator isn't intersection
+    //       calc(terms, apostrophes, i);
+    //     } else if (operators[i-1] != '\u2229' && i != 0 && i != operators.length-1) {
+    //       calc(terms, apostrophes, i);
+    //     } else if (i === operators.length-1) {
+    //       if (operators[i-1] != '\u2229') {
+    //         calc(terms, apostrophes, i);
+    //       }
+    //       calc(terms, apostrophes, i+1);
+    //     }
+    //
+    //   }
+    // }
+    //
+    //
+    // //global Union:
+    // let result = [0, 0, 0, 0];
+    // let last;
+    //
+    // while (stack.isempty() != 0) {
+    //   last = stack.deleteLastpaintedArea();
+    //   for (let i = 0; i < result.length; i++) {
+    //     //console.log(last[i]);
+    //     result[i] = result[i] + last[i];
+    //     //console.log(result[i]);
+    //   }
+    // }
+    //
+    //
+    // return result;
 
   }
 
@@ -392,7 +495,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     let prev="";
-    let stack = "";
+    let mystack = "";
     for(let i=0; i<inputStr.length; i++) {      //check character by character
 
       //make sure that 2 sets are not given consequently
@@ -415,23 +518,26 @@ $(document).ready(function(){   //make sure the document is already loaded
 
       //make sure that left parethesis and right parenthesis are balanced and paired
       if (inputStr[i] === '(') {
-        stack = stack + '(';
+        mystack = mystack + '(';
       }
       if(inputStr[i] === ')') {
-        stack = stack.substring(0, stack.length - 1); //if right parenthesis is found pop from stack
+        mystack = mystack.substring(0, mystack.length - 1); //if right parenthesis is found pop from stack
       }
 
       prev = inputStr[i];
     }
-    
-    if(stack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
+
+    if(mystack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
       showErrorMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.');
     }
 
     //Now we'll visualize user's set in the Venn diagram
     //mystr = "A2B1(A5B3(B1A)2A)1(S$D)1A";
-    // myParser(inputStr);
-
+    //let myResult = myParser(inputStr);
+    myParser(inputStr);
+    let myResult = stack.deleteLastpaintedArea();
+    console.log("Finished:");
+    console.log(myResult);
     //  INTERSECTION:
     // fill_intersection("lightblue");
     // //////////////////////////////////////////////////////////////////////
