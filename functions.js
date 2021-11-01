@@ -1,5 +1,7 @@
 $(document).ready(function(){   //make sure the document is already loaded
 
+  var myResult = [0,0,0,0]; ///////////////////////////////////
+
   var x1 = 250,
       y1 = 250,
       r1 = 150, //150
@@ -7,7 +9,7 @@ $(document).ready(function(){   //make sure the document is already loaded
       y2 = 250,
       r2 = 80; //80
 
-  var canvas = d3.select("body")
+  var canvas = d3.select("#venn")
              .append("svg") //so we append the svg element to our page
              //now let's give some properties
              .attr("width", 725) //when we are styling svg elements, we use attr method
@@ -15,16 +17,19 @@ $(document).ready(function(){   //make sure the document is already loaded
              .style("margin-left","400px")
              .style("background-color","#e4dada")
              .style("border","solid 3px");
+             
   //Let's start by creating a circle:
   var circle1, circle2;
   function drawCircles() {
     circle1 = canvas.append("circle")
+                  .attr('id', 'c1')
                   .attr("cx", x1) //we want to give it a horizontal position
                   .attr("cy", y1)
                   .attr("r", r1) //radius
                   .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
                   .attr("stroke-width",3)
                   .attr("fill","none");
+                  
 
     circle2 = canvas.append("circle")
                   .attr("cx", x2) //we want to give it a horizontal position
@@ -32,7 +37,8 @@ $(document).ready(function(){   //make sure the document is already loaded
                   .attr("r", r2) //radius
                   .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
                   .attr("stroke-width",3)
-                  .attr("fill","none");
+                  .attr("fill","none")
+                  .attr('id', 'c2');
   }
 
   drawCircles();
@@ -430,10 +436,10 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     //Now we'll visualize user's set in the Venn diagram
-    let myResult = myParser(inputStr);
+    myResult = myParser(inputStr);      /////// RESET POTE??
     console.log("Finished:");
     console.log(myResult);
-
+/*
      if (myResult[3] === 1) {
        canvas.style("background-color","lightblue");
        circle1.attr("fill","#e4dada");
@@ -450,8 +456,56 @@ $(document).ready(function(){   //make sure the document is already loaded
      }
      if (myResult[2] === 1) {
        if(fill_intersection("lightblue") != -2);
-     }
+     }*/
+     highlightVenn();
 
   });
 
+
+  function highlightVenn() {
+    if (myResult[3] === 1) {
+      canvas.style("background-color","lightblue");
+      circle1.attr("fill","#e4dada");
+      circle2.attr("fill","#e4dada");
+      if(fill_intersection("#e4dada") != -2);
+    }
+    if (myResult[0] === 1) {
+      circle1.attr("fill","lightblue");
+      if(fill_intersection("#e4dada") != -2);
+    }
+    if (myResult[1] === 1) {
+      circle2.attr("fill","lightblue");
+      if(fill_intersection("#e4dada") != -2);
+    }
+    if (myResult[2] === 1) {
+      if(fill_intersection("lightblue") != -2);
+    }
+  }
+
+  var slider1 = document.getElementById("myRange1");
+  var output1 = document.getElementById("demo1");
+  output1.innerHTML = slider1.value;
+  console.log(slider1.value);
+
+  var slider2 = document.getElementById("myRange2");
+  var output2 = document.getElementById("demo2");
+  output2.innerHTML = slider2.value;
+
+  $('#myRange1').on('input', function() {
+    output1.innerHTML = this.value;
+    r1 = this.value;
+    circle1.attr("r", r1);
+    interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    highlightVenn();
+  })
+
+  $('#myRange2').on('input', function() {
+    output2.innerHTML = this.value;
+    r2 = this.value;
+    circle2.attr("r", r2);
+    interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    highlightVenn();
+  })
+
+  
 });
