@@ -107,13 +107,13 @@ $(document).ready(function(){   //make sure the document is already loaded
     let myInput = $('.text-box').html();      //get the text from the text-box
     myInput = myInput.substring(0, myInput.length - 1);     //remove the last character
     $('#set').text(myInput);      //show in the text-box
-    //result = [0,0,0,0];
+    // result = [0,0,0,0];
     stack.emptyStack();
   });
 
   $('#Reset').click(function() {
     $('.text-box').empty();     //delete the string
-    //result = [0,0,0,0];
+    // result = [0,0,0,0];
     stack.emptyStack();
   });
 
@@ -215,9 +215,9 @@ $(document).ready(function(){   //make sure the document is already loaded
 
     let array;
 
-    array = stack.deleteLastpaintedArea();
+    array = stack.deleteLastpaintedArea();  //pop from the stack
 
-    if (apostrophes[index] === 1) { //if we have complement
+    if (apostrophes[index] === 1) { //if we have complement for the terms[index]
       for (let j = 0; j < array.length; j++) {
         if (array[j] === 0) {
           array[j] = 1;
@@ -272,7 +272,7 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   var stack = new Stack();
 
-  //let result = [0, 0, 0, 0];
+  // let result = [0, 0, 0, 0];
 
   // a parser for the expression in order to find which area to paint on the canvas
   function myParser(inputStr) {
@@ -294,9 +294,9 @@ $(document).ready(function(){   //make sure the document is already loaded
     let start;
     let terms = new Array();
     let operators = new Array();
-    let apostrophes = new Array(); // (bit array) keeps indexes of terms that an apostrophe is following.
+    let apostrophes = new Array(); // (bit array) every item set to 1 if the corresponding term in array terms has the complement sign
 
-    //Reading character by character in order to find the terms and the operators.
+    //Reading character by character in order to find the terms and the operators of the expression
     for (let i = 0; i < inputStr.length; i++) {
 
       //looking for a whole expression in parenthesis
@@ -331,7 +331,7 @@ $(document).ready(function(){   //make sure the document is already loaded
       }
     }
 
-    //initialize array marked.
+    //initialize array marked, bit array it will mark the terms that have been used during parsing
     let marked = new Array();
     for (let i = 0; i < terms.length; i++) {
       marked[i] = 0;
@@ -339,27 +339,28 @@ $(document).ready(function(){   //make sure the document is already loaded
 
     let array1, array2;
 
-    //calculate for every intersection
+    //calculate for every intersection first
     for (let i = 0; i < operators.length; i++) {
 
       if (operators[i] === '\u2229') { //if operator is an intersection
 
-        stack.insertoperator(operators[i]); //add operator into the stack
+        stack.insertoperator(operators[i]); //add operator into the stack ///////////////////////////////// TO BE DELETED??
 
         //recursive calls for the left and right terms of operator[i]
-        if (marked[i] === 0) {
+        if (marked[i] === 0) {  //if neither the left term nor the right term have been parsed
           myParser(terms[i]);
           myParser(terms[i+1]);
 
+          //left & right term have been parsed, so mark them as parsed
           marked[i] = 1;
           marked[i+1] = 1;
 
           array2 = findComplement(i+1, apostrophes);
           array1 = findComplement(i, apostrophes);
 
-          stack.deleteLastoperator();
+          stack.deleteLastoperator();   /////////////////////////////////////////// TO BE DELETED??
 
-          //put the result of intersection operator at array1
+          //put the result of intersection operator into array1
           for (let j = 0; j < array1.length; j++) {
             array1[j] = array1[j] + array2[j];
             if (array1[j] === 2) {
@@ -367,17 +368,19 @@ $(document).ready(function(){   //make sure the document is already loaded
             } else array1[j] = 0;
           }
 
-          stack.insertpaintedArea(array1);
-          console.log("marked = 0");
-          console.log(array1);
-        } else {
-          array1 = stack.deleteLastpaintedArea();
-          marked[i+1] = 1;
+          stack.insertpaintedArea(array1);  //insert the calculated array into the stack
+          console.log("marked = 0"); ////////////////////////////////
+          console.log(array1);  ///////////////////////////////////
+        } else {      //if the left term of the intersection has been parsed for a previous intersection
+          array1 = stack.deleteLastpaintedArea(); //pop the calculated array from the stack
+          
+          marked[i+1] = 1;  //mark the right term as parsed
 
-          myParser(terms[i+1]);
+          myParser(terms[i+1]); //parse the right term
+
           array2 = findComplement(i+1, apostrophes);
 
-          stack.deleteLastoperator();
+          stack.deleteLastoperator();   ////////////////////////////////// TO BE DELETED???
 
           //put the result of intersection operator at array1
           for (let j = 0; j < array1.length; j++) {
@@ -387,15 +390,15 @@ $(document).ready(function(){   //make sure the document is already loaded
             } else array1[j] = 0;
           }
 
-          stack.insertpaintedArea(array1);
-          console.log("marked = 1");
-          console.log(array1);
+          stack.insertpaintedArea(array1);  //insert the calculated array into the stack
+          console.log("marked = 1");  ///////////////////////////////////
+          console.log(array1);  ////////////////////////////////
         }
       }
     }
 
 
-
+    //now calculate the complement (if it exists) for all the remaining terms in the expression and add them into the stack
     for (let i = 0; i < marked.length; i++) {
       if (marked[i] != 1) {
         myParser(terms[i]);
@@ -408,34 +411,35 @@ $(document).ready(function(){   //make sure the document is already loaded
     let result = [0, 0, 0, 0];
     let last;
 
+    //apply the union operator to the terms in the stack
     while (stack.isempty() != 0) {
 
       //if (!stack.isempty())/*(stack.length != 0)*/ {
-        last = stack.deleteLastpaintedArea();
+        last = stack.deleteLastpaintedArea();   //pop from stack the already calculated array
         if (typeof(last) == 'undefined') {
           break;
         }
-        console.log("last:",last);
+        console.log("last:",last);    //////////////////////////////////////////
         for (let i = 0; i < result.length; i++) {
           result[i] = result[i] + last[i];
         }
       //}
       //else break;
-      console.log("evolution:");
-      console.log(result);
+      console.log("evolution:");  //////////////////////////////////////////////
+      console.log(result);    ////////////////////////////////////////////
     }
 
-
+    //calculate the final area to be painted for inputStr (finally union operator)
     for (let i = 0; i < result.length; i++) {
       if (result[i] != 0) {
         result[i] = 1;
       }
     }
 
-    console.log("Before:");
-    console.log(result);
+    console.log("Before:"); ////////////////////////////////////////
+    console.log(result); ////////////////////////////////////
 
-    stack.insertpaintedArea(result);
+    stack.insertpaintedArea(result);  //add the result into the stack
     //return result;
     //calculate for the rest of the expressions (unions)
     // for (let i = 0; i < operators.length; i++) {
@@ -474,7 +478,9 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   }
 
+  //Goal: all the functionality for when you submit an input
   //make sure this is not an ivalid input
+  //parse the expression and highlight the corresponding area on the Venn diagram
   $('#Submit').click(function() {
     let inputStr = $('.text-box').html();      //get the text from the text-box
 
@@ -538,6 +544,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     let myResult = stack.deleteLastpaintedArea();
     console.log("Finished:");
     console.log(myResult);
+    console.log(stack.isempty());
     //  INTERSECTION:
     // fill_intersection("lightblue");
     // //////////////////////////////////////////////////////////////////////
