@@ -1,40 +1,11 @@
 $(document).ready(function(){   //make sure the document is already loaded
-/*
-  var canvas = document.getElementById("canvas");
-  var ctx = canvas.getContext("2d");
-  console.log(ctx);
 
-  ctx.fillStyle = "#e4dada";//"yellow";
-  ctx.lineWidth = 3;
-
-  var circle1 = {
-      x: 250,
-      y: 250,
-      r: 150,
-      color: "green"
-  };
-  var circle2 = {
-      x: 450,
-      y: 250,
-      r: 150,
-      color: "orange"
-  };
-
-  ctx.beginPath();
-  ctx.arc(circle1.x, circle1.y, circle1.r, 0, 2 * Math.PI, false);
-  ctx.strokeStyle = circle1.color;
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(circle2.x, circle2.y, circle2.r, 0, 2 * Math.PI, false);
-  ctx.strokeStyle = circle2.color;
-  ctx.stroke(); */
   var x1 = 250,
       y1 = 250,
       r1 = 150, //150
       x2 = 450,
       y2 = 250,
-      r2 = 80; //150
+      r2 = 80; //80
 
   var canvas = d3.select("body")
              .append("svg") //so we append the svg element to our page
@@ -45,21 +16,34 @@ $(document).ready(function(){   //make sure the document is already loaded
              .style("background-color","#e4dada")
              .style("border","solid 3px");
   //Let's start by creating a circle:
-  var circle1 = canvas.append("circle")
-                .attr("cx", x1) //we want to give it a horizontal position
-                .attr("cy", y1)
-                .attr("r", r1) //radius
-                .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
-                .attr("stroke-width",3)
-                .attr("fill","none");
+  var circle1, circle2;
+  function drawCircles() {
+    circle1 = canvas.append("circle")
+                  .attr("cx", x1) //we want to give it a horizontal position
+                  .attr("cy", y1)
+                  .attr("r", r1) //radius
+                  .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
+                  .attr("stroke-width",3)
+                  .attr("fill","none");
 
-  var circle2 = canvas.append("circle")
-                .attr("cx", x2) //we want to give it a horizontal position
-                .attr("cy", y2)
-                .attr("r", r2) //radius
-                .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
-                .attr("stroke-width",3)
-                .attr("fill","none");
+    circle2 = canvas.append("circle")
+                  .attr("cx", x2) //we want to give it a horizontal position
+                  .attr("cy", y2)
+                  .attr("r", r2) //radius
+                  .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
+                  .attr("stroke-width",3)
+                  .attr("fill","none");
+  }
+
+  drawCircles();
+
+  function resetCanvas() {
+    d3.select("svg")
+      .selectAll("*")
+      .remove();
+    drawCircles();
+    canvas.style("background-color","#e4dada");
+  }
 
   var interPoints = intersection(x1, y1, r1, x2, y2, r2);
 
@@ -107,14 +91,11 @@ $(document).ready(function(){   //make sure the document is already loaded
     let myInput = $('.text-box').html();      //get the text from the text-box
     myInput = myInput.substring(0, myInput.length - 1);     //remove the last character
     $('#set').text(myInput);      //show in the text-box
-    // result = [0,0,0,0];
-    stack.emptyStack();
   });
 
   $('#Reset').click(function() {
     $('.text-box').empty();     //delete the string
-    // result = [0,0,0,0];
-    stack.emptyStack();
+    resetCanvas();
   });
 
   function showErrorMessage(str) {
@@ -186,6 +167,10 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   function fill_intersection(color) {
 
+    if (interPoints === false) {
+      return -2;
+    }
+
     if (interPoints == -1) {
       if (r1 < r2) {
         circle1.attr("fill",color);
@@ -210,12 +195,7 @@ $(document).ready(function(){   //make sure the document is already loaded
   }
 
 
-
-  function findComplement(index, apostrophes) {
-
-    let array;
-
-    array = stack.deleteLastpaintedArea();  //pop from the stack
+  function findComplement(array, index, apostrophes) {
 
     if (apostrophes[index] === 1) { //if we have complement for the terms[index]
       for (let j = 0; j < array.length; j++) {
@@ -231,61 +211,15 @@ $(document).ready(function(){   //make sure the document is already loaded
   }
 
 
-  function calc(terms, apostrophes, i) {
-
-    myParser(terms[i]);
-    let array1 = findComplement(i, apostrophes);
-    // console.log(array1);
-    stack.insertpaintedArea(array1);
-
-  }
-
-
-
-  class Stack {
-    constructor() {
-      this.paintedAreaStack = new Array();
-      this.operatorsStack = new Array();
-    }
-    insertpaintedArea(paintedArea) {
-      this.paintedAreaStack.push(paintedArea);
-    }
-    deleteLastpaintedArea() {
-      return this.paintedAreaStack.pop();
-    }
-    isempty() {
-      if (this.paintedAreaStack.length === 0) {
-        return 0;
-      } else return 1;
-    }
-    emptyStack() {
-      this.paintedAreaStack.splice(0,this.paintedAreaStack.length);
-    }
-    insertoperator(operator) {
-      this.operatorsStack.push(operator);
-    }
-    deleteLastoperator() {
-      return this.operatorsStack.pop();
-    }
-  }
-
-
-  var stack = new Stack();
-
-  // let result = [0, 0, 0, 0];
-
   // a parser for the expression in order to find which area to paint on the canvas
   function myParser(inputStr) {
 
     //end of recursion if the expression is a set
     if (inputStr === 'A') {
-      stack.insertpaintedArea([1,0,1,0]);
       return [1,0,1,0];
     } else if (inputStr === 'B') {
-      stack.insertpaintedArea([0,1,1,0]);
       return [0,1,1,0];
     } else if (inputStr === '\u2205') { //empty set
-      stack.insertpaintedArea([0,0,0,0]);
       return [0,0,0,0];
     }
 
@@ -338,27 +272,25 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     let array1, array2;
-
+    let keepInter = new Array();
     //calculate for every intersection first
     for (let i = 0; i < operators.length; i++) {
 
       if (operators[i] === '\u2229') { //if operator is an intersection
 
-        stack.insertoperator(operators[i]); //add operator into the stack ///////////////////////////////// TO BE DELETED??
-
         //recursive calls for the left and right terms of operator[i]
         if (marked[i] === 0) {  //if neither the left term nor the right term have been parsed
-          myParser(terms[i]);
-          myParser(terms[i+1]);
+          array1 = myParser(terms[i]);
+          array2 = myParser(terms[i+1]);
 
           //left & right term have been parsed, so mark them as parsed
           marked[i] = 1;
           marked[i+1] = 1;
 
-          array2 = findComplement(i+1, apostrophes);
-          array1 = findComplement(i, apostrophes);
+          array2 = findComplement(array2, i+1, apostrophes);
+          array1 = findComplement(array1, i, apostrophes);
 
-          stack.deleteLastoperator();   /////////////////////////////////////////// TO BE DELETED??
+
 
           //put the result of intersection operator into array1
           for (let j = 0; j < array1.length; j++) {
@@ -368,19 +300,19 @@ $(document).ready(function(){   //make sure the document is already loaded
             } else array1[j] = 0;
           }
 
-          stack.insertpaintedArea(array1);  //insert the calculated array into the stack
-          console.log("marked = 0"); ////////////////////////////////
-          console.log(array1);  ///////////////////////////////////
+          keepInter.push(array1);
+          //insert the calculated array into the stack
+
         } else {      //if the left term of the intersection has been parsed for a previous intersection
-          array1 = stack.deleteLastpaintedArea(); //pop the calculated array from the stack
-          
+          array1 = keepInter.pop();//pop the calculated array from the stack
+
           marked[i+1] = 1;  //mark the right term as parsed
 
-          myParser(terms[i+1]); //parse the right term
+          array2 = myParser(terms[i+1]); //parse the right term
 
-          array2 = findComplement(i+1, apostrophes);
+          array2 = findComplement(array2, i+1, apostrophes);
 
-          stack.deleteLastoperator();   ////////////////////////////////// TO BE DELETED???
+
 
           //put the result of intersection operator at array1
           for (let j = 0; j < array1.length; j++) {
@@ -390,9 +322,8 @@ $(document).ready(function(){   //make sure the document is already loaded
             } else array1[j] = 0;
           }
 
-          stack.insertpaintedArea(array1);  //insert the calculated array into the stack
-          console.log("marked = 1");  ///////////////////////////////////
-          console.log(array1);  ////////////////////////////////
+          keepInter.push(array1);//insert the calculated array into the stack
+
         }
       }
     }
@@ -401,9 +332,9 @@ $(document).ready(function(){   //make sure the document is already loaded
     //now calculate the complement (if it exists) for all the remaining terms in the expression and add them into the stack
     for (let i = 0; i < marked.length; i++) {
       if (marked[i] != 1) {
-        myParser(terms[i]);
-        array1 = findComplement(i, apostrophes);
-        stack.insertpaintedArea(array1);
+        array1 = myParser(terms[i]);
+        array1 = findComplement(array1, i, apostrophes);
+        keepInter.push(array1);
       }
     }
 
@@ -412,21 +343,18 @@ $(document).ready(function(){   //make sure the document is already loaded
     let last;
 
     //apply the union operator to the terms in the stack
-    while (stack.isempty() != 0) {
+    while (keepInter.length != 0) {
 
-      //if (!stack.isempty())/*(stack.length != 0)*/ {
-        last = stack.deleteLastpaintedArea();   //pop from stack the already calculated array
+
+        last = keepInter.pop();//pop from stack the already calculated array
         if (typeof(last) == 'undefined') {
           break;
         }
-        console.log("last:",last);    //////////////////////////////////////////
+
         for (let i = 0; i < result.length; i++) {
           result[i] = result[i] + last[i];
         }
-      //}
-      //else break;
-      console.log("evolution:");  //////////////////////////////////////////////
-      console.log(result);    ////////////////////////////////////////////
+
     }
 
     //calculate the final area to be painted for inputStr (finally union operator)
@@ -436,45 +364,8 @@ $(document).ready(function(){   //make sure the document is already loaded
       }
     }
 
-    console.log("Before:"); ////////////////////////////////////////
-    console.log(result); ////////////////////////////////////
 
-    stack.insertpaintedArea(result);  //add the result into the stack
-    //return result;
-    //calculate for the rest of the expressions (unions)
-    // for (let i = 0; i < operators.length; i++) {
-    //   if (operators[i] === '\u222A') { //if operator is a union
-    //
-    //     if (i === 0) {    //if previous operator isn't intersection
-    //       calc(terms, apostrophes, i);
-    //     } else if (operators[i-1] != '\u2229' && i != 0 && i != operators.length-1) {
-    //       calc(terms, apostrophes, i);
-    //     } else if (i === operators.length-1) {
-    //       if (operators[i-1] != '\u2229') {
-    //         calc(terms, apostrophes, i);
-    //       }
-    //       calc(terms, apostrophes, i+1);
-    //     }
-    //
-    //   }
-    // }
-    //
-    //
-    // //global Union:
-    // let result = [0, 0, 0, 0];
-    // let last;
-    //
-    // while (stack.isempty() != 0) {
-    //   last = stack.deleteLastpaintedArea();
-    //   for (let i = 0; i < result.length; i++) {
-    //     //console.log(last[i]);
-    //     result[i] = result[i] + last[i];
-    //     //console.log(result[i]);
-    //   }
-    // }
-    //
-    //
-    // return result;
+    return result;
 
   }
 
@@ -482,6 +373,7 @@ $(document).ready(function(){   //make sure the document is already loaded
   //make sure this is not an ivalid input
   //parse the expression and highlight the corresponding area on the Venn diagram
   $('#Submit').click(function() {
+    resetCanvas();
     let inputStr = $('.text-box').html();      //get the text from the text-box
 
     //if input starts with union or intersection or ' or ) accordingly show error message
@@ -538,36 +430,27 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     //Now we'll visualize user's set in the Venn diagram
-    //mystr = "A2B1(A5B3(B1A)2A)1(S$D)1A";
-    //let myResult = myParser(inputStr);
-    myParser(inputStr);
-    let myResult = stack.deleteLastpaintedArea();
+    let myResult = myParser(inputStr);
     console.log("Finished:");
     console.log(myResult);
-    console.log(stack.isempty());
-    //  INTERSECTION:
-    // fill_intersection("lightblue");
-    // //////////////////////////////////////////////////////////////////////
-    //ONLY SET A:
-    // circle1.attr("fill","lightblue");
-    // fill_intersection("#e4dada");
-    // //ONLY SET B:
-    // circle2.attr("fill","lightblue");
-    // fill_intersection("#e4dada");
-    /////////////
-    // UNION:
-    // circle1.attr("fill","lightblue");
-    // circle2.attr("fill","lightblue");
-    // fill_intersection("lightblue");
-    /////////////
-    // DEIGMATIKOS XWROS:
-    // canvas.style("background-color","lightblue");
-    /////////////
-    // MONO DEIGMATIKOS XWROS:
-     // canvas.style("background-color","lightblue");
-     // circle1.attr("fill","#e4dada");
-     // circle2.attr("fill","#e4dada");
-     // fill_intersection("#e4dada");
+
+     if (myResult[3] === 1) {
+       canvas.style("background-color","lightblue");
+       circle1.attr("fill","#e4dada");
+       circle2.attr("fill","#e4dada");
+       if(fill_intersection("#e4dada") != -2);
+     }
+     if (myResult[0] === 1) {
+       circle1.attr("fill","lightblue");
+       if(fill_intersection("#e4dada") != -2);
+     }
+     if (myResult[1] === 1) {
+       circle2.attr("fill","lightblue");
+       if(fill_intersection("#e4dada") != -2);
+     }
+     if (myResult[2] === 1) {
+       if(fill_intersection("lightblue") != -2);
+     }
 
   });
 
