@@ -2,12 +2,14 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   var myResult = [0,0,0,0]; ///////////////////////////////////
 
+  var left_limit = 250; //constant center of the left circle
+
   var x1 = 250,
       y1 = 250,
-      r1 = 150, //150
+      r1 = 233, //150
       x2 = 450,
       y2 = 250,
-      r2 = 80; //80
+      r2 = 81; //80
 
   var canvas = d3.select("#venn")
              .append("svg") //so we append the svg element to our page
@@ -17,6 +19,8 @@ $(document).ready(function(){   //make sure the document is already loaded
              .style("margin-left","400px")
              .style("background-color","#e4dada")
              .style("border","solid 3px");
+
+  // let g_inter = canvas.append("g");
              
   //Let's start by creating a circle:
   var circle1, circle2;
@@ -50,6 +54,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     drawCircles();
     canvas.style("background-color","#e4dada");
   }
+
 
   var interPoints = intersection(x1, y1, r1, x2, y2, r2);
 
@@ -185,16 +190,53 @@ $(document).ready(function(){   //make sure the document is already loaded
         circle2.attr("fill",color);
       }
     }
-    else {
+    else {/*
       canvas.append("g")
         .append("path")
         .attr("d", function() {
           return "M" + interPoints[0] + "," + interPoints[2] + "A" + r2 + "," + r2 +
-            " 0 0,1 " + interPoints[1] + "," + interPoints[3]+ "A" + r1 + "," + r1 +
+            " 0 0,1 " + interPoints[1] + "," + interPoints[3] + "A" + r1 + "," + r1 +
             " 0 0,1 " + interPoints[0] + "," + interPoints[2];
         })
         .style('fill', color)
-        .style("stroke","black");
+        .style("stroke","black");*/
+
+      let g_inter = canvas.append("g");
+
+      //calculate angles for the intersection points for circle
+      
+      let qqq = angle(x1, y1, interPoints[0], interPoints[2]);
+      let sss = angle(x1, y1, interPoints[1], interPoints[3]);
+
+      console.log(qqq);
+      console.log(sss);
+      
+      //draw the arc with center coordinates (x1, y1)
+      let d1 = describeArc(x1, y1, r1, sss + 90, qqq + 90);
+      console.log(d1);
+      g_inter.append("g")
+            .append("path")
+            .attr("d", d1)
+            .style('fill', color)
+            .style("stroke","black");
+
+      //calculate angles for the intersection points for circle
+      let q1 = angle(x2, y2, interPoints[0], interPoints[2]);
+      let s1 = angle(x2, y2, interPoints[1], interPoints[3]);
+    
+      console.log(s1);
+      console.log(q1);
+    
+      //draw the arc with center coordinates (x2, y2)
+      let d2 = describeArc(x2, y2, r2, q1+90, s1+90);
+      console.log(d2);
+      g_inter.append("g")
+            .append("path")
+            .attr("d", d2)
+            .style('fill', color)
+            .style("stroke","black");
+
+      g_inter.style('fill', 'color');
 
     }
 
@@ -439,25 +481,8 @@ $(document).ready(function(){   //make sure the document is already loaded
     myResult = myParser(inputStr);      /////// RESET POTE??
     console.log("Finished:");
     console.log(myResult);
-/*
-     if (myResult[3] === 1) {
-       canvas.style("background-color","lightblue");
-       circle1.attr("fill","#e4dada");
-       circle2.attr("fill","#e4dada");
-       if(fill_intersection("#e4dada") != -2);
-     }
-     if (myResult[0] === 1) {
-       circle1.attr("fill","lightblue");
-       if(fill_intersection("#e4dada") != -2);
-     }
-     if (myResult[1] === 1) {
-       circle2.attr("fill","lightblue");
-       if(fill_intersection("#e4dada") != -2);
-     }
-     if (myResult[2] === 1) {
-       if(fill_intersection("lightblue") != -2);
-     }*/
-     highlightVenn();
+
+    highlightVenn();
 
   });
 
@@ -482,10 +507,11 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
   }
 
+
+  //change the size of the circles with range sliders
   var slider1 = document.getElementById("myRange1");
   var output1 = document.getElementById("demo1");
   output1.innerHTML = slider1.value;
-  console.log(slider1.value);
 
   var slider2 = document.getElementById("myRange2");
   var output2 = document.getElementById("demo2");
@@ -494,18 +520,129 @@ $(document).ready(function(){   //make sure the document is already loaded
   $('#myRange1').on('input', function() {
     output1.innerHTML = this.value;
     r1 = this.value;
+    console.log(r1, r2);
+
     circle1.attr("r", r1);
     interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    console.log(interPoints);
+
+    resetCanvas();
     highlightVenn();
   })
 
   $('#myRange2').on('input', function() {
     output2.innerHTML = this.value;
     r2 = this.value;
+    console.log(r1, r2)
+
+    resetCanvas();
     circle2.attr("r", r2);
     interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    console.log(interPoints);
+    
+    resetCanvas();
     highlightVenn();
   })
 
+  //change the dinstance between the 2 centers of the circles
+  var slider3 = document.getElementById("myRange3");
+  var output3 = document.getElementById("demo3");
+  output3.innerHTML = slider3.value;
+
+  $('#myRange3').on('input', function() {
+    output3.innerHTML = this.value;
+
+    x2 = left_limit + Number(this.value);
+
+    // circle2.attr("cx", x2);
+
+    resetCanvas();
+    // circle2.attr("r", r2);
+    interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    // console.log(interPoints);
+    
+    highlightVenn();
+  })
+
+
+  ///////////////////////////////////////////////////////////////////
+
+  //get angle, in degrees, for point (ex, ey) from the horizontal line
+  //passing through center (cx, cy)
+  function angle(cx, cy, ex, ey) {
+    var dy = ey - cy;
+    var dx = ex - cx;
+    var theta = Math.atan2(dy, dx); // range (-PI, PI]
+    theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+    if (theta < 0) theta = 360 + theta; // range [0, 360)
+    return theta;
+  }
+
+
+/////////////////////////////////////////////////////////////////////
+
+  function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+    var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
   
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+
+  ////////////////////////////////////////////////////////////////
+
+  //describes the arc starting from the point (x, y-radius)
+  function describeArc(x, y, radius, startAngle, endAngle){
+
+    var start = polarToCartesian(x, y, radius, endAngle);
+    var end = polarToCartesian(x, y, radius, startAngle);
+
+    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+    var d = [
+        "M", start.x, start.y, 
+        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+    ].join(" ");
+
+    return d;       
+  }
+
+  /////////////////////////////////////////////////////////
+
+  
+/*
+  //calculate angles for the intersection points
+  qqq = angle(x1, y1, interPoints[0], interPoints[2]);
+  sss = angle(x1, y1, interPoints[1], interPoints[3]);
+
+  console.log(qqq);
+  console.log(sss);
+  
+  let d1 = describeArc(x1, y1, r1, sss + 90, qqq + 90);
+  console.log(d1);
+  g_inter.append("g")
+        .append("path")
+        .attr("d", d1)
+        .style('fill', 'lightblue')
+        .style("stroke","black");
+  
+
+  /////////////////////////////////////////////////////////
+
+  let q1 = angle(x2, y2, interPoints[0], interPoints[2]);
+  let s1 = angle(x2, y2, interPoints[1], interPoints[3]);
+
+  console.log(s1);
+  console.log(q1);
+
+  let d2 = describeArc(x2, y2, r2, q1+90, s1+90);
+  console.log(d2);
+  g_inter.append("g")
+        .append("path")
+        .attr("d", d2)
+        .style('fill', 'lightblue')
+        .style("stroke","black");
+*/
+  /////////////////////////////////////////////////////////////////////////////////
 });

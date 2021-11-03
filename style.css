@@ -53,6 +53,8 @@ canvas {
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    
+    display: block;
   }
   
   .slider:hover {
@@ -79,4 +81,12 @@ canvas {
       margin: 25px;
       margin-left: 5%;
       margin-top: 50px;
+  }
+
+  /* #myRange3 {
+    float: right;
+  } */
+
+  #Demo3 {
+    float: right;
   }
