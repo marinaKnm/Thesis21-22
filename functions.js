@@ -129,7 +129,7 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   function intersection(x0, y0, ra, x1, y1, rb) {
 
-      console.log('Beginning of intersection: r1 = ' +ra+ ' r2 = ' +rb);
+      // console.log('Beginning of intersection: r1 = ' +ra+ ' r2 = ' +rb);
 
       var a, dx, dy, d, h, rx, ry;
       var x2, y2;
@@ -143,7 +143,7 @@ $(document).ready(function(){   //make sure the document is already loaded
       /* Determine the straight-line distance between the centers. */
       d = Math.sqrt((dy * dy) + (dx * dx));
 
-      console.log('Straight line distance between centers d = ' +d);
+      // console.log('Straight line distance between centers d = ' +d);
 
       /* Check for solvability. */
       if (d > (ra + rb)) {
@@ -153,22 +153,22 @@ $(document).ready(function(){   //make sure the document is already loaded
       if (d < Math.abs(ra - rb)) {
         console.log('no solution: r1 = ', ra, ' r2 = ', rb);
         /* no solution. one circle is contained in the other */
-        if (ra < rb) {
-          // circle1.attr("fill","lightblue");
-          console.log('returning 1');
-          return 1;
-        }
-        if (rb < ra){
-          // circle2.attr("fill","lightblue");
-          console.log('returning 2');
+        // if (ra < rb) {
+        //   circle1.attr("fill","lightblue");
+        //   console.log('returning 1');
+        //   return 1;
+        // }
+        // if (rb < ra){
+        //   circle2.attr("fill","lightblue");
+        //   console.log('returning 2');
 
-          console.log(rb < ra);
+        //   console.log(rb < ra);
 
-          console.log("Intersection: r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
-          console.log("Intersection: ra = ", ra, " rb = ", rb);
-          return 2;
-        }
-        // return -1;
+        //   console.log("Intersection: r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
+        //   console.log("Intersection: ra = ", ra, " rb = ", rb);
+        //   return 2;
+        // }
+        return -1;
       }
 
       /* 'point 2' is the point where the line through the circle
@@ -209,22 +209,26 @@ $(document).ready(function(){   //make sure the document is already loaded
       return -2;
     }
 
-    // if (interPoints == -1) {
-    //   if (r1 < r2) {
-    //     circle1.attr("fill",color);
-    //   }
-    //   else if (r2 < r1){
-    //     circle2.attr("fill",color);
-    //   }
+    if (interPoints == -1) {
+      console.log("one of the circles is contained into the other");
+      console.log('r1 = ' + crcl1.r1 + ' r2 = ' + crcl2.r2);
+      if (crcl1.r1 < crcl2.r2) {
+        circle1.attr("fill",color);
+        console.log('condition : crcl1.r1 < crcl2.r2')
+      }
+      if (crcl2.r2 < crcl1.r1){
+        circle2.attr("fill",color);
+        console.log('condition : crcl2.r2 < crcl1.r1');
+      }
+    }
+
+    // if (interPoints == 2) {
+    //   circle2.attr("fill",color);
     // }
 
-    if (interPoints == 2) {
-      circle2.attr("fill",color);
-    }
-
-    else if( interPoints == 1) {
-      circle1.attr("fill", color);
-    }
+    // else if( interPoints == 1) {
+    //   circle1.attr("fill", color);
+    // }
 
     else {/*
       canvas.append("g")
@@ -575,6 +579,9 @@ $(document).ready(function(){   //make sure the document is already loaded
     // console.log(interPoints);
 
     resetCanvas();
+    // circle1.style('fill');  //////
+    circle1.attr('fill', 'none');
+    circle2.attr('fill', 'none');
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     console.log(interPoints);
@@ -593,11 +600,12 @@ $(document).ready(function(){   //make sure the document is already loaded
     // interPoints = intersection(x1, y1, r1, x2, y2, r2);
     // console.log(interPoints);
     
-    resetCanvas();
+    // resetCanvas();
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     console.log(interPoints);
-
+    circle1.attr('fill', 'none');
+    circle2.attr('fill', 'none');
     highlightVenn();
   })
 
@@ -612,13 +620,13 @@ $(document).ready(function(){   //make sure the document is already loaded
 
     crcl2.x2 = left_limit + Number(this.value);
 
-    // circle2.attr("cx", x2);
-
     resetCanvas();
+    
     // circle2.attr("r", r2);
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     // console.log(interPoints);
-    
+    circle1.attr('fill', 'none');
+    circle2.attr('fill', 'none');
     highlightVenn();
   })
 
