@@ -1,15 +1,29 @@
 $(document).ready(function(){   //make sure the document is already loaded
 
-  var myResult = [0,0,0,0]; ///////////////////////////////////
+  var myResult = [0,0,0,0];
 
   var left_limit = 250; //constant center of the left circle
 
-  var x1 = 250,
-      y1 = 250,
-      r1 = 233, //150
-      x2 = 450,
-      y2 = 250,
-      r2 = 81; //80
+  var crcl1 = {
+    x1: 250,
+    y1: 250,
+    r1: 5 //72,//70,//233, //150
+  } 
+
+  var crcl2 = {
+    x2: 272,//306,//302//450,
+    y2: 250,
+    r2: 198//103;//81; //80
+  }
+
+  // var x1 = 250,
+  //     y1 = 250,
+  //     r1 = 5,//72,//70,//233, //150
+  //     x2 = 272,//306,//302//450,
+  //     y2 = 250,
+  //     r2 = 198;//103;//81; //80
+
+  console.log("r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
 
   var canvas = d3.select("#venn")
              .append("svg") //so we append the svg element to our page
@@ -19,26 +33,24 @@ $(document).ready(function(){   //make sure the document is already loaded
              .style("margin-left","400px")
              .style("background-color","#e4dada")
              .style("border","solid 3px");
-
-  // let g_inter = canvas.append("g");
              
   //Let's start by creating a circle:
   var circle1, circle2;
   function drawCircles() {
     circle1 = canvas.append("circle")
                   .attr('id', 'c1')
-                  .attr("cx", x1) //we want to give it a horizontal position
-                  .attr("cy", y1)
-                  .attr("r", r1) //radius
+                  .attr("cx", crcl1.x1) //we want to give it a horizontal position
+                  .attr("cy", crcl1.y1)
+                  .attr("r", crcl1.r1) //radius
                   .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
                   .attr("stroke-width",3)
                   .attr("fill","none");
                   
 
     circle2 = canvas.append("circle")
-                  .attr("cx", x2) //we want to give it a horizontal position
-                  .attr("cy", y2)
-                  .attr("r", r2) //radius
+                  .attr("cx", crcl2.x2) //we want to give it a horizontal position
+                  .attr("cy", crcl2.y2)
+                  .attr("r", crcl2.r2) //radius
                   .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
                   .attr("stroke-width",3)
                   .attr("fill","none")
@@ -56,7 +68,7 @@ $(document).ready(function(){   //make sure the document is already loaded
   }
 
 
-  var interPoints = intersection(x1, y1, r1, x2, y2, r2);
+  var interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
 
   // when you hover over a button change colour to pink
   $(".Button").hover(function() {
@@ -115,7 +127,10 @@ $(document).ready(function(){   //make sure the document is already loaded
     $('.error_msg').fadeOut(3000);
   }
 
-  function intersection(x0, y0, r0, x1, y1, r1) {
+  function intersection(x0, y0, ra, x1, y1, rb) {
+
+      console.log('Beginning of intersection: r1 = ' +ra+ ' r2 = ' +rb);
+
       var a, dx, dy, d, h, rx, ry;
       var x2, y2;
 
@@ -128,20 +143,32 @@ $(document).ready(function(){   //make sure the document is already loaded
       /* Determine the straight-line distance between the centers. */
       d = Math.sqrt((dy * dy) + (dx * dx));
 
+      console.log('Straight line distance between centers d = ' +d);
+
       /* Check for solvability. */
-      if (d > (r0 + r1)) {
+      if (d > (ra + rb)) {
         /* no solution. circles do not intersect. */
         return false;
       }
-      if (d < Math.abs(r0 - r1)) {
+      if (d < Math.abs(ra - rb)) {
+        console.log('no solution: r1 = ', ra, ' r2 = ', rb);
         /* no solution. one circle is contained in the other */
-        // if (r0 < r1) {
-        //   circle1.attr("fill","lightblue");
-        // }
-        // else {
-        //   circle2.attr("fill","lightblue");
-        // }
-        return -1;
+        if (ra < rb) {
+          // circle1.attr("fill","lightblue");
+          console.log('returning 1');
+          return 1;
+        }
+        if (rb < ra){
+          // circle2.attr("fill","lightblue");
+          console.log('returning 2');
+
+          console.log(rb < ra);
+
+          console.log("Intersection: r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
+          console.log("Intersection: ra = ", ra, " rb = ", rb);
+          return 2;
+        }
+        // return -1;
       }
 
       /* 'point 2' is the point where the line through the circle
@@ -150,7 +177,7 @@ $(document).ready(function(){   //make sure the document is already loaded
        */
 
       /* Determine the distance from point 0 to point 2. */
-      a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d);
+      a = ((ra * ra) - (rb * rb) + (d * d)) / (2.0 * d);
 
       /* Determine the coordinates of point 2. */
       x2 = x0 + (dx * a / d);
@@ -159,7 +186,7 @@ $(document).ready(function(){   //make sure the document is already loaded
       /* Determine the distance from point 2 to either of the
        * intersection points.
        */
-      h = Math.sqrt((r0 * r0) - (a * a));
+      h = Math.sqrt((ra * ra) - (a * a));
 
       /* Now determine the offsets of the intersection points from
        * point 2.
@@ -182,14 +209,23 @@ $(document).ready(function(){   //make sure the document is already loaded
       return -2;
     }
 
-    if (interPoints == -1) {
-      if (r1 < r2) {
-        circle1.attr("fill",color);
-      }
-      else {
-        circle2.attr("fill",color);
-      }
+    // if (interPoints == -1) {
+    //   if (r1 < r2) {
+    //     circle1.attr("fill",color);
+    //   }
+    //   else if (r2 < r1){
+    //     circle2.attr("fill",color);
+    //   }
+    // }
+
+    if (interPoints == 2) {
+      circle2.attr("fill",color);
     }
+
+    else if( interPoints == 1) {
+      circle1.attr("fill", color);
+    }
+
     else {/*
       canvas.append("g")
         .append("path")
@@ -201,45 +237,51 @@ $(document).ready(function(){   //make sure the document is already loaded
         .style('fill', color)
         .style("stroke","black");*/
 
+        
       let g_inter = canvas.append("g");
 
-      //calculate angles for the intersection points for circle
+      //calculate angles for the intersection points for circle 1
+      let qqq = angle(crcl1.x1,  crcl1.y1, interPoints[0], interPoints[2]);  //angle with lower intersection point
+      let sss = angle(crcl1.x1, crcl1.y1, interPoints[1], interPoints[3]);  //angle with upper intersection point
       
-      let qqq = angle(x1, y1, interPoints[0], interPoints[2]);
-      let sss = angle(x1, y1, interPoints[1], interPoints[3]);
+      // console.log("for cirlces' 1 stroke");
+      // console.log('lower agnle: ', qqq);
+      // console.log('upper angel: ', sss);
 
-      console.log(qqq);
-      console.log(sss);
-      
       //draw the arc with center coordinates (x1, y1)
-      let d1 = describeArc(x1, y1, r1, sss + 90, qqq + 90);
-      console.log(d1);
+      let d1 = describeArc(crcl1.x1, crcl1.y1, crcl1.r1, sss + 90, qqq + 90); //arc from the upper intersection point to the lower intersection point
+
       g_inter.append("g")
             .append("path")
             .attr("d", d1)
             .style('fill', color)
             .style("stroke","black");
 
-      //calculate angles for the intersection points for circle
-      let q1 = angle(x2, y2, interPoints[0], interPoints[2]);
-      let s1 = angle(x2, y2, interPoints[1], interPoints[3]);
+
+      //calculate angles for the intersection points for circle 2
+      let q1 = angle(crcl2.x2, crcl2.y2, interPoints[0], interPoints[2]);   //angle with lower intersection point
+      let s1 = angle(crcl2.x2, crcl2.y2, interPoints[1], interPoints[3]);   //angle with upper intersection point
     
-      console.log(s1);
-      console.log(q1);
-    
+      // console.log(interPoints);
+      // console.log("for cirlces' 2 stroke");
+      // console.log('lower agnle: ', q1);
+      // console.log('upper angel: ', s1);
+
+      if (s1 < 0) {
+        s1 = 360 + s1;
+      }
+
       //draw the arc with center coordinates (x2, y2)
-      let d2 = describeArc(x2, y2, r2, q1+90, s1+90);
-      console.log(d2);
+      let d2 = describeArc(crcl2.x2, crcl2.y2, crcl2.r2, q1+90, s1+90); //arc from the lower intersection point to the upper intersection point    
+
       g_inter.append("g")
             .append("path")
             .attr("d", d2)
             .style('fill', color)
             .style("stroke","black");
 
-      g_inter.style('fill', 'color');
-
     }
-
+    console.log('fill_intersection: interPoints = ', interPoints);
   }
 
 
@@ -393,7 +435,6 @@ $(document).ready(function(){   //make sure the document is already loaded
     //apply the union operator to the terms in the stack
     while (keepInter.length != 0) {
 
-
         last = keepInter.pop();//pop from stack the already calculated array
         if (typeof(last) == 'undefined') {
           break;
@@ -462,6 +503,12 @@ $(document).ready(function(){   //make sure the document is already loaded
         return;
       }
 
+      //make sure that we do not get a complement sign after a union sign or an intersection sign
+      if ((prev === '\u222A' || prev === '\u2229') &&  inputStr[i] === "'") {
+        showErrorMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται A, B, (, " +'\u2205');
+        return;
+      }
+
       //make sure that left parethesis and right parenthesis are balanced and paired
       if (inputStr[i] === '(') {
         mystack = mystack + '(';
@@ -519,28 +566,38 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   $('#myRange1').on('input', function() {
     output1.innerHTML = this.value;
-    r1 = this.value;
-    console.log(r1, r2);
+    crcl1.r1 = this.value;
+    // r2 = r2;
+    console.log(crcl1.r1, crcl2.r2);
 
-    circle1.attr("r", r1);
-    interPoints = intersection(x1, y1, r1, x2, y2, r2);
-    console.log(interPoints);
+    // circle1.attr("r", r1);
+    // interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    // console.log(interPoints);
 
     resetCanvas();
+
+    interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
+    console.log(interPoints);
+
     highlightVenn();
   })
 
   $('#myRange2').on('input', function() {
     output2.innerHTML = this.value;
-    r2 = this.value;
-    console.log(r1, r2)
+    crcl2.r2 = this.value;
+    // crcl1.r1 = r1;
+    console.log(crcl1.r1, crcl2.r2);
 
     resetCanvas();
-    circle2.attr("r", r2);
-    interPoints = intersection(x1, y1, r1, x2, y2, r2);
-    console.log(interPoints);
+    // circle2.attr("r", r2);
+    // interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    // console.log(interPoints);
     
     resetCanvas();
+
+    interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
+    console.log(interPoints);
+
     highlightVenn();
   })
 
@@ -549,16 +606,17 @@ $(document).ready(function(){   //make sure the document is already loaded
   var output3 = document.getElementById("demo3");
   output3.innerHTML = slider3.value;
 
+  //move only the center of the 2nd circle
   $('#myRange3').on('input', function() {
     output3.innerHTML = this.value;
 
-    x2 = left_limit + Number(this.value);
+    crcl2.x2 = left_limit + Number(this.value);
 
     // circle2.attr("cx", x2);
 
     resetCanvas();
     // circle2.attr("r", r2);
-    interPoints = intersection(x1, y1, r1, x2, y2, r2);
+    interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     // console.log(interPoints);
     
     highlightVenn();
@@ -569,12 +627,13 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   //get angle, in degrees, for point (ex, ey) from the horizontal line
   //passing through center (cx, cy)
+  //rotation: clockwise
   function angle(cx, cy, ex, ey) {
     var dy = ey - cy;
     var dx = ex - cx;
     var theta = Math.atan2(dy, dx); // range (-PI, PI]
     theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
-    if (theta < 0) theta = 360 + theta; // range [0, 360)
+    // if (theta < 0) theta = 360 + theta; // range [0, 360)
     return theta;
   }
 
@@ -592,7 +651,9 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   ////////////////////////////////////////////////////////////////
 
-  //describes the arc starting from the point (x, y-radius)
+  //returns the path for an arc of a circle from startAngle to endAngle
+  //rotation: clockwise
+  //angle 0 on point (0, radius)
   function describeArc(x, y, radius, startAngle, endAngle){
 
     var start = polarToCartesian(x, y, radius, endAngle);
@@ -610,39 +671,4 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   /////////////////////////////////////////////////////////
 
-  
-/*
-  //calculate angles for the intersection points
-  qqq = angle(x1, y1, interPoints[0], interPoints[2]);
-  sss = angle(x1, y1, interPoints[1], interPoints[3]);
-
-  console.log(qqq);
-  console.log(sss);
-  
-  let d1 = describeArc(x1, y1, r1, sss + 90, qqq + 90);
-  console.log(d1);
-  g_inter.append("g")
-        .append("path")
-        .attr("d", d1)
-        .style('fill', 'lightblue')
-        .style("stroke","black");
-  
-
-  /////////////////////////////////////////////////////////
-
-  let q1 = angle(x2, y2, interPoints[0], interPoints[2]);
-  let s1 = angle(x2, y2, interPoints[1], interPoints[3]);
-
-  console.log(s1);
-  console.log(q1);
-
-  let d2 = describeArc(x2, y2, r2, q1+90, s1+90);
-  console.log(d2);
-  g_inter.append("g")
-        .append("path")
-        .attr("d", d2)
-        .style('fill', 'lightblue')
-        .style("stroke","black");
-*/
-  /////////////////////////////////////////////////////////////////////////////////
 });
