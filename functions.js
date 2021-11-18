@@ -1,4 +1,4 @@
-$(document).ready(function(){   //make sure the document is already loaded
+//$(document).ready(function(){   //make sure the document is already loaded
 
   var myResult = [0,0,0,0];
 
@@ -15,13 +15,6 @@ $(document).ready(function(){   //make sure the document is already loaded
     y2: 250,
     r2: 80//103;//81; //80
   }
-
-  // var x1 = 250,
-  //     y1 = 250,
-  //     r1 = 5,//72,//70,//233, //150
-  //     x2 = 272,//306,//302//450,
-  //     y2 = 250,
-  //     r2 = 198;//103;//81; //80
 
   console.log("r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
 
@@ -181,7 +174,7 @@ $(document).ready(function(){   //make sure the document is already loaded
         return false;
       }
       if (d < Math.abs(ra - rb)) {
-        console.log('no solution: r1 = ', ra, ' r2 = ', rb);
+        // console.log('no solution: r1 = ', ra, ' r2 = ', rb);
         /* no solution. one circle is contained in the other */
         return -1;
       }
@@ -269,7 +262,7 @@ $(document).ready(function(){   //make sure the document is already loaded
             .style("stroke","black");
 
     }
-    console.log('fill_intersection: interPoints = ', interPoints);
+    // console.log('fill_intersection: interPoints = ', interPoints);
   }
 
 
@@ -514,7 +507,7 @@ $(document).ready(function(){   //make sure the document is already loaded
 
     //Now we'll visualize user's set in the Venn diagram
     myResult = myParser(inputStr);      /////// RESET POTE??
-    console.log("Finished:");
+    // console.log("Finished:");
     console.log(myResult);
 
     highlightVenn();
@@ -562,7 +555,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     else resetCanvas();
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
-    console.log(interPoints);
+    // console.log(interPoints);
 
     highlightVenn();
   });
@@ -577,7 +570,7 @@ $(document).ready(function(){   //make sure the document is already loaded
     else resetCanvas();
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
-    console.log(interPoints);
+    // console.log(interPoints);
     highlightVenn();
   });
 
@@ -651,4 +644,4 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   /////////////////////////////////////////////////////////
 
-});
+//});
