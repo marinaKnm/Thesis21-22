@@ -7,13 +7,13 @@ $(document).ready(function(){   //make sure the document is already loaded
   var crcl1 = {
     x1: 250,
     y1: 250,
-    r1: 5 //72,//70,//233, //150
-  } 
+    r1: 150 //72,//70,//233, //150
+  }
 
   var crcl2 = {
-    x2: 272,//306,//302//450,
+    x2: 450,//306,//302//450,
     y2: 250,
-    r2: 198//103;//81; //80
+    r2: 80//103;//81; //80
   }
 
   // var x1 = 250,
@@ -33,7 +33,7 @@ $(document).ready(function(){   //make sure the document is already loaded
              .style("margin-left","400px")
              .style("background-color","#e4dada")
              .style("border","solid 3px");
-             
+
   //Let's start by creating a circle:
   var circle1, circle2;
   function drawCircles() {
@@ -45,7 +45,7 @@ $(document).ready(function(){   //make sure the document is already loaded
                   .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
                   .attr("stroke-width",3)
                   .attr("fill","none");
-                  
+
 
     circle2 = canvas.append("circle")
                   .attr("cx", crcl2.x2) //we want to give it a horizontal position
@@ -64,6 +64,36 @@ $(document).ready(function(){   //make sure the document is already loaded
       .selectAll("*")
       .remove();
     drawCircles();
+    canvas.style("background-color","#e4dada");
+  }
+
+  function drawCirclesOpp() {
+
+    circle2 = canvas.append("circle")
+                  .attr("cx", crcl2.x2) //we want to give it a horizontal position
+                  .attr("cy", crcl2.y2)
+                  .attr("r", crcl2.r2) //radius
+                  .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
+                  .attr("stroke-width",3)
+                  .attr("fill","none")
+                  .attr('id', 'c2');
+
+    circle1 = canvas.append("circle")
+                  .attr('id', 'c1')
+                  .attr("cx", crcl1.x1) //we want to give it a horizontal position
+                  .attr("cy", crcl1.y1)
+                  .attr("r", crcl1.r1) //radius
+                  .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
+                  .attr("stroke-width",3)
+                  .attr("fill","none");
+
+  }
+
+  function resetCanvasOpp() {
+    d3.select("svg")
+      .selectAll("*")
+      .remove();
+    drawCirclesOpp();
     canvas.style("background-color","#e4dada");
   }
 
@@ -153,21 +183,6 @@ $(document).ready(function(){   //make sure the document is already loaded
       if (d < Math.abs(ra - rb)) {
         console.log('no solution: r1 = ', ra, ' r2 = ', rb);
         /* no solution. one circle is contained in the other */
-        // if (ra < rb) {
-        //   circle1.attr("fill","lightblue");
-        //   console.log('returning 1');
-        //   return 1;
-        // }
-        // if (rb < ra){
-        //   circle2.attr("fill","lightblue");
-        //   console.log('returning 2');
-
-        //   console.log(rb < ra);
-
-        //   console.log("Intersection: r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
-        //   console.log("Intersection: ra = ", ra, " rb = ", rb);
-        //   return 2;
-        // }
         return -1;
       }
 
@@ -210,47 +225,21 @@ $(document).ready(function(){   //make sure the document is already loaded
     }
 
     if (interPoints == -1) {
-      console.log("one of the circles is contained into the other");
-      console.log('r1 = ' + crcl1.r1 + ' r2 = ' + crcl2.r2);
       if (crcl1.r1 < crcl2.r2) {
         circle1.attr("fill",color);
-        console.log('condition : crcl1.r1 < crcl2.r2')
       }
       if (crcl2.r2 < crcl1.r1){
         circle2.attr("fill",color);
-        console.log('condition : crcl2.r2 < crcl1.r1');
       }
     }
 
-    // if (interPoints == 2) {
-    //   circle2.attr("fill",color);
-    // }
+    else {
 
-    // else if( interPoints == 1) {
-    //   circle1.attr("fill", color);
-    // }
-
-    else {/*
-      canvas.append("g")
-        .append("path")
-        .attr("d", function() {
-          return "M" + interPoints[0] + "," + interPoints[2] + "A" + r2 + "," + r2 +
-            " 0 0,1 " + interPoints[1] + "," + interPoints[3] + "A" + r1 + "," + r1 +
-            " 0 0,1 " + interPoints[0] + "," + interPoints[2];
-        })
-        .style('fill', color)
-        .style("stroke","black");*/
-
-        
       let g_inter = canvas.append("g");
 
       //calculate angles for the intersection points for circle 1
       let qqq = angle(crcl1.x1,  crcl1.y1, interPoints[0], interPoints[2]);  //angle with lower intersection point
       let sss = angle(crcl1.x1, crcl1.y1, interPoints[1], interPoints[3]);  //angle with upper intersection point
-      
-      // console.log("for cirlces' 1 stroke");
-      // console.log('lower agnle: ', qqq);
-      // console.log('upper angel: ', sss);
 
       //draw the arc with center coordinates (x1, y1)
       let d1 = describeArc(crcl1.x1, crcl1.y1, crcl1.r1, sss + 90, qqq + 90); //arc from the upper intersection point to the lower intersection point
@@ -265,18 +254,13 @@ $(document).ready(function(){   //make sure the document is already loaded
       //calculate angles for the intersection points for circle 2
       let q1 = angle(crcl2.x2, crcl2.y2, interPoints[0], interPoints[2]);   //angle with lower intersection point
       let s1 = angle(crcl2.x2, crcl2.y2, interPoints[1], interPoints[3]);   //angle with upper intersection point
-    
-      // console.log(interPoints);
-      // console.log("for cirlces' 2 stroke");
-      // console.log('lower agnle: ', q1);
-      // console.log('upper angel: ', s1);
 
       if (s1 < 0) {
         s1 = 360 + s1;
       }
 
       //draw the arc with center coordinates (x2, y2)
-      let d2 = describeArc(crcl2.x2, crcl2.y2, crcl2.r2, q1+90, s1+90); //arc from the lower intersection point to the upper intersection point    
+      let d2 = describeArc(crcl2.x2, crcl2.y2, crcl2.r2, q1+90, s1+90); //arc from the lower intersection point to the upper intersection point
 
       g_inter.append("g")
             .append("path")
@@ -562,73 +546,61 @@ $(document).ready(function(){   //make sure the document is already loaded
   //change the size of the circles with range sliders
   var slider1 = document.getElementById("myRange1");
   var output1 = document.getElementById("demo1");
-  output1.innerHTML = slider1.value;
+  output1.innerHTML = parseInt(slider1.value);
 
   var slider2 = document.getElementById("myRange2");
   var output2 = document.getElementById("demo2");
-  output2.innerHTML = slider2.value;
+  output2.innerHTML = parseInt(slider2.value);
 
   $('#myRange1').on('input', function() {
-    output1.innerHTML = this.value;
-    crcl1.r1 = this.value;
-    // r2 = r2;
-    console.log(crcl1.r1, crcl2.r2);
+    output1.innerHTML = parseInt(this.value);
+    crcl1.r1 = parseInt(this.value);
 
-    // circle1.attr("r", r1);
-    // interPoints = intersection(x1, y1, r1, x2, y2, r2);
-    // console.log(interPoints);
-
-    resetCanvas();
-    // circle1.style('fill');  //////
-    circle1.attr('fill', 'none');
-    circle2.attr('fill', 'none');
+    if (crcl1.r1 < crcl2.r2) {
+      resetCanvasOpp();
+    }
+    else resetCanvas();
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     console.log(interPoints);
 
     highlightVenn();
-  })
+  });
 
   $('#myRange2').on('input', function() {
-    output2.innerHTML = this.value;
-    crcl2.r2 = this.value;
-    // crcl1.r1 = r1;
-    console.log(crcl1.r1, crcl2.r2);
+    output2.innerHTML = parseInt(this.value);
+    crcl2.r2 = parseInt(this.value);
 
-    resetCanvas();
-    // circle2.attr("r", r2);
-    // interPoints = intersection(x1, y1, r1, x2, y2, r2);
-    // console.log(interPoints);
-    
-    // resetCanvas();
+    if (crcl1.r1 < crcl2.r2) {
+      resetCanvasOpp();
+    }
+    else resetCanvas();
 
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
     console.log(interPoints);
-    circle1.attr('fill', 'none');
-    circle2.attr('fill', 'none');
     highlightVenn();
-  })
+  });
 
   //change the dinstance between the 2 centers of the circles
   var slider3 = document.getElementById("myRange3");
   var output3 = document.getElementById("demo3");
-  output3.innerHTML = slider3.value;
+  output3.innerHTML = parseInt(slider3.value);
 
   //move only the center of the 2nd circle
   $('#myRange3').on('input', function() {
-    output3.innerHTML = this.value;
+    output3.innerHTML = parseInt(this.value);
 
     crcl2.x2 = left_limit + Number(this.value);
 
-    resetCanvas();
-    
-    // circle2.attr("r", r2);
+    if (crcl1.r1 < crcl2.r2) {
+      resetCanvasOpp();
+    }
+    else resetCanvas();
+
     interPoints = intersection(crcl1.x1, crcl1.y1, crcl1.r1, crcl2.x2, crcl2.y2, crcl2.r2);
-    // console.log(interPoints);
-    circle1.attr('fill', 'none');
-    circle2.attr('fill', 'none');
+
     highlightVenn();
-  })
+  });
 
 
   ///////////////////////////////////////////////////////////////////
@@ -650,7 +622,7 @@ $(document).ready(function(){   //make sure the document is already loaded
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
-  
+
     return {
       x: centerX + (radius * Math.cos(angleInRadians)),
       y: centerY + (radius * Math.sin(angleInRadians))
@@ -670,11 +642,11 @@ $(document).ready(function(){   //make sure the document is already loaded
     var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     var d = [
-        "M", start.x, start.y, 
+        "M", start.x, start.y,
         "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
     ].join(" ");
 
-    return d;       
+    return d;
   }
 
   /////////////////////////////////////////////////////////
