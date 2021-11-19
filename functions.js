@@ -7,13 +7,15 @@
   var crcl1 = {
     x1: 250,
     y1: 250,
-    r1: 150 //72,//70,//233, //150
+    r1: 150, //72,//70,//233, //150
+    color: '#d1040b'  //red
   }
 
   var crcl2 = {
     x2: 450,//306,//302//450,
     y2: 250,
-    r2: 80//103;//81; //80
+    r2: 80,//103;//81; //80
+    color: '#5604d1'
   }
 
   console.log("r1 = ", crcl1.r1, " r2 = ", crcl2.r2);
@@ -29,13 +31,14 @@
 
   //Let's start by creating a circle:
   var circle1, circle2;
+  //////////////////////////////////////////////////////////////////////////
   function drawCircles() {
     circle1 = canvas.append("circle")
                   .attr('id', 'c1')
                   .attr("cx", crcl1.x1) //we want to give it a horizontal position
                   .attr("cy", crcl1.y1)
                   .attr("r", crcl1.r1) //radius
-                  .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
+                  .attr("stroke",crcl1.color) 
                   .attr("stroke-width",3)
                   .attr("fill","none");
 
@@ -44,7 +47,7 @@
                   .attr("cx", crcl2.x2) //we want to give it a horizontal position
                   .attr("cy", crcl2.y2)
                   .attr("r", crcl2.r2) //radius
-                  .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
+                  .attr("stroke", crcl2.color) 
                   .attr("stroke-width",3)
                   .attr("fill","none")
                   .attr('id', 'c2');
@@ -59,14 +62,14 @@
     drawCircles();
     canvas.style("background-color","#e4dada");
   }
-
+  //////////////////////////////////////////////////////////////////////////
   function drawCirclesOpp() {
 
     circle2 = canvas.append("circle")
                   .attr("cx", crcl2.x2) //we want to give it a horizontal position
                   .attr("cy", crcl2.y2)
                   .attr("r", crcl2.r2) //radius
-                  .attr("stroke","black") // .attr("stroke","orange") 44444444444444$$$$$$44444444444
+                  .attr("stroke", crcl2.color) 
                   .attr("stroke-width",3)
                   .attr("fill","none")
                   .attr('id', 'c2');
@@ -76,11 +79,12 @@
                   .attr("cx", crcl1.x1) //we want to give it a horizontal position
                   .attr("cy", crcl1.y1)
                   .attr("r", crcl1.r1) //radius
-                  .attr("stroke","black") // .attr("stroke","green") 77777&&&&&777777
+                  .attr("stroke",crcl1.color) 
                   .attr("stroke-width",3)
                   .attr("fill","none");
 
   }
+  //////////////////////////////////////////////////////////////////////
 
   function resetCanvasOpp() {
     d3.select("svg")
@@ -152,8 +156,6 @@
   }
 
   function intersection(x0, y0, ra, x1, y1, rb) {
-
-      // console.log('Beginning of intersection: r1 = ' +ra+ ' r2 = ' +rb);
 
       var a, dx, dy, d, h, rx, ry;
       var x2, y2;
@@ -242,7 +244,7 @@
             .append("path")
             .attr("d", d1)
             .style('fill', color)
-            .style("stroke","black");
+            .style("stroke",crcl1.color);
 
 
       //calculate angles for the intersection points for circle 2
@@ -260,7 +262,7 @@
             .append("path")
             .attr("d", d2)
             .style('fill', color)
-            .style("stroke","black");
+            .style("stroke",crcl2.color);
 
     }
     // console.log('fill_intersection: interPoints = ', interPoints);
@@ -279,9 +281,7 @@
     }
 
     return array;
-
   }
-
 
 
   function getArraysOfTerms(input) {
@@ -346,53 +346,12 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // arrays = getArraysOfTerms(inputStr);
-    // let terms = arrays.terms;
-    // let operators = arrays.operators;
-    // let apostrophes = arrays.apostrophes;
+    //parse the input into terms, and opetators while keeping which term has an apostrophe in a bit array
+    arrays = getArraysOfTerms(inputStr);
+    let terms = arrays.terms;
+    let operators = arrays.operators;
+    let apostrophes = arrays.apostrophes;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    let flag = 0;
-    let start;
-    let terms = new Array();
-    let operators = new Array();
-    let apostrophes = new Array(); // (bit array) every item set to 1 if the corresponding term in array terms has the complement sign
-
-    //Reading character by character in order to find the terms and the operators of the expression
-    for (let i = 0; i < inputStr.length; i++) {
-
-      //looking for a whole expression in parenthesis
-      if (inputStr[i] === '(') {
-        flag++;
-        if (flag === 1) {
-          start = i+1;  //keep the index that the expression starts from
-        }
-      }
-      else if (inputStr[i] === ')') {
-        flag--;
-        if (flag === 0) {
-           terms.push(inputStr.substring(start, i));  //store as a whole term
-           if (inputStr[i+1] === "'") {
-             apostrophes.push(1);
-           }
-           else apostrophes.push(0);
-        }
-      }
-
-      //term A, B or empty set
-      else if ((inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === '\u2205') && (flag === 0)) {
-        terms.push(inputStr[i]);
-        if (inputStr[i+1] === "'") {
-          apostrophes.push(1);
-        }
-        else apostrophes.push(0);
-      }
-      //append current operator to operators array
-      else if ((inputStr[i] === '\u222A' || inputStr[i] === '\u2229') && (flag === 0)) {
-        operators.push(inputStr[i]);
-      }
-    } 
-    //////////////////////////////////////////////////////////////////////////////////
 
     //initialize array marked, bit array it will mark the terms that have been used during parsing
     let marked = new Array();
@@ -494,7 +453,6 @@
 
 
     return result;
-
   }
 
   //Goal: all the functionality for when you submit an input
@@ -542,8 +500,8 @@
         return;
       }
 
-      //make sure that we do not get a complement sign after a union sign or an intersection sign
-      if ((prev === '\u222A' || prev === '\u2229') &&  inputStr[i] === "'") {
+      //make sure that we do not get a complement sign or a left parentheses after a union sign or an intersection sign
+      if ((prev === '\u222A' || prev === '\u2229') &&  (inputStr[i] === "'" || inputStr[i] === ")")) {
         showMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται A, B, (, " +'\u2205', '#error_msg', 3000);
         return;
       }
@@ -553,7 +511,13 @@
         mystack = mystack + '(';
       }
       if(inputStr[i] === ')') {
-        mystack = mystack.substring(0, mystack.length - 1); //if right parenthesis is found pop from stack
+        if (mystack.length > 0) {
+          mystack = mystack.substring(0, mystack.length - 1); //if right parenthesis is found pop from stack
+          console.log('Right parentheses found removing left parentheses from stack');
+        } else {
+          showMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.', '#error_msg', 3000);
+          return;
+        }
       }
 
       prev = inputStr[i];
@@ -561,44 +525,32 @@
 
     if(mystack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
       showMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.', '#error_msg', 3000);
+      return;
     }
 
     //Now we'll visualize user's set in the Venn diagram
     myResult = myParser(inputStr); 
     // console.log("Finished:");
     console.log(myResult);
-    // debugger;
 
     highlightVenn();
 
-    //check if de morgan property applies to the input
-    arrays = getArraysOfTerms(inputStr);
+    ///////////////check if de morgan property applies to the input////////////////
+    arrays = getArraysOfTerms(inputStr);    //parse the input into terms and operator like in myParser()
     let  terms = arrays.terms;
     let operators = arrays.operators;
     let apostrophes = arrays.apostrophes;
 
-    let DeMorganFalse = 0;
-    // debugger;
-    console.log(terms);
-    console.log(operators);
-    console.log(apostrophes);
-    console.log('dmskfnsklgndkl');
+    let DeMorganFalse = 0;  //flag, value 1 signifies that the de morgan property is not applicable for this input
 
-    //input type: (AUBUAU...)'
-    debugger;
-    if (apostrophes.length === 1 && apostrophes[0] === 1) {
-      console.log('We have only one term and it is a complement');
+    /////// input type: (AUBUAU...)'
+    if (apostrophes.length === 1 && apostrophes[0] === 1) {;
       arrays = getArraysOfTerms(terms[0]);
 
       terms = arrays.terms;
       operators = arrays.operators;
       apostrophes = arrays.apostrophes;
-      console.log(terms);
-      console.log(operators);
-      console.log(apostrophes);
-      console.log('SECOND TIME PARSING');
 
-      // debugger;
 
       if(operators.length !== 0) {
 
@@ -611,27 +563,33 @@
           }
         }
 
-        if (DeMorganFalse !== 1) {  //if the de morgan property applies to the input
+        if (DeMorganFalse !== 1) {  //if the de morgan property applies on the input
           message = 'Ιδιότητα De Morgan, ισχύει: ' + inputStr + ' = ';
 
-          if (op === '\u222A') {
+          if (op === '\u222A') {  //discern which operator we are going to apply
             op = '\u2229';
           } else {
-            op === '\u222A';
+            op = '\u222A';
           }
 
-          let j, str;
+          let str;
           for(j = 0; j < terms.length; j++) {
             if (j === terms.length - 1) {
               op = "";
             }
 
-            if (apostrophes[j] === 1) { //ΤΙ ΓΙΝΕΤΑΙ ΑΝ ΕΧΟΥΜΕ ΠΟΛΛΑ "'''..."?
-              str = "''" + op;
-            } else {
-              str = "'" + op;
+            //apply the apostrophe, if any, on the terms
+            if (apostrophes[j] === 1) { 
+              
+              if (terms[j].length > 1) {  //embedded term
+                terms[j] = "(" + terms[j] + ")'" 
+              } else {
+                terms[j] = terms[j] + "'"
+              }
             }
 
+            str = "'" + op;
+            //update the final string
             if (terms[j].length > 1) {  //embedded term
               message = message + "(" + terms[j] + ")" + str;
             } else {
@@ -640,20 +598,20 @@
             
           }
 
-          showMessage(message, '#deMorgan_msg', 100000);
+          showMessage(message, '#deMorgan_msg', 10000);
         }
       }
     } else {
 
-      //input type: A'UB'U...
-      for (i = 0; i < apostrophes.length; i++) {
+      ///////////input type: A'UB'U...
+      for (i = 0; i < apostrophes.length; i++) {  //check if every term has an apostrophe
         if ( apostrophes[i] != 1) {
           DeMorganFalse = 1;
           break;
         }
       }
       op = operators[0];
-      for(i=1; i < operators.length; i++) {
+      for(i=1; i < operators.length; i++) { //check if every operator is of the same type
         if (operators[i] != op) {
           DeMorganFalse = 1;
           break;
@@ -664,16 +622,14 @@
         //at this point all the operators are of the same type and every term has a complement
         message = 'Ιδιότητα De Morgan, ισχύει: ' + inputStr + ' = (';
 
-        if (op === '\u222A') {
+        if (op === '\u222A') {  //discern which operator we are going to apply
           op = '\u2229';
         } else {
-          op === '\u222A';
+          op = '\u222A';
         }
 
-        console.log(terms);
-        console.log(operators);
-        console.log(apostrophes);
-
+        //insert every term of the string(stripped of its apostrophe, if any) into the final string
+        //of the message
         for(j = 0; j < terms.length; j++) {
           if (j === terms.length - 1) {
             op = "";
@@ -687,13 +643,10 @@
         
         }
         message = message + ")'";
-        showMessage(message, '#deMorgan_msg', 100000);
+        showMessage(message, '#deMorgan_msg', 10000);
       }
     }
     
-  
-
-
   });
 
 
