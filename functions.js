@@ -142,12 +142,13 @@
   $('#Reset').click(function() {
     $('.text-box').empty();     //delete the string
     resetCanvas();
+    myResult = [0, 0, 0, 0];
   });
 
-  function showErrorMessage(str) {
-    $('.error_msg').html(str);
-    $('.error_msg').fadeIn(3000);
-    $('.error_msg').fadeOut(3000);
+  function showMessage(str, element, time) {
+    $(element).html(str);
+    $(element).fadeIn(time);
+    $(element).fadeOut(time);
   }
 
   function intersection(x0, y0, ra, x1, y1, rb) {
@@ -282,6 +283,55 @@
   }
 
 
+
+  function getArraysOfTerms(input) {
+    let flag = 0;
+    let start;
+    let terms = new Array();
+    let operators = new Array();
+    let apostrophes = new Array();
+
+    for (let i = 0; i < input.length; i++) {
+
+      //looking for a whole expression in parenthesis
+      if (input[i] === '(') {
+        flag++;
+        if (flag === 1) {
+          start = i+1;  //keep the index that the expression starts from
+        }
+      }
+      else if (input[i] === ')') {
+        flag--;
+        if (flag === 0) {
+           terms.push(input.substring(start, i));  //store as a whole term
+           if (input[i+1] === "'") {
+             apostrophes.push(1);
+           }
+           else apostrophes.push(0);
+        }
+      }
+
+      //term A, B or empty set
+      else if ((input[i] === 'A' || input[i] === 'B' || input[i] === '\u2205') && (flag === 0)) {
+        terms.push(input[i]);
+        if (input[i+1] === "'") {
+          apostrophes.push(1);
+        }
+        else apostrophes.push(0);
+      }
+      //append current operator to operators array
+      else if ((input[i] === '\u222A' || input[i] === '\u2229') && (flag === 0)) {
+        operators.push(input[i]);
+      }
+    }
+
+    return {
+      terms,
+      operators,
+      apostrophes
+    }
+  }
+
   // a parser for the expression in order to find which area to paint on the canvas
   function myParser(inputStr) {
 
@@ -294,7 +344,14 @@
       return [0,0,0,0];
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // arrays = getArraysOfTerms(inputStr);
+    // let terms = arrays.terms;
+    // let operators = arrays.operators;
+    // let apostrophes = arrays.apostrophes;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     let flag = 0;
     let start;
     let terms = new Array();
@@ -334,7 +391,8 @@
       else if ((inputStr[i] === '\u222A' || inputStr[i] === '\u2229') && (flag === 0)) {
         operators.push(inputStr[i]);
       }
-    }
+    } 
+    //////////////////////////////////////////////////////////////////////////////////
 
     //initialize array marked, bit array it will mark the terms that have been used during parsing
     let marked = new Array();
@@ -449,16 +507,16 @@
     //if input starts with union or intersection or ' or ) accordingly show error message
     switch (inputStr[0]) {
       case '\u222A':  //union
-        showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
+        showMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.', '#error_msg', 3000);
         return;
-      case '\u2229': //intersect
-        showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
+      case '\u2229': //intersection
+        showrMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.', '#error_msg', 3000);
         return;
       case "'":
-        showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
+        showrMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.', '#error_msg', 3000);
         return;
       case ')':
-        showErrorMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.');
+        showMessage('Μη έγκυρη πρόταση. Πρέπει να ξεκινάει με σύνολο ή αριστερή παρένθεση.', '#error_msg', 3000);
         return;
     }
 
@@ -468,25 +526,25 @@
 
       //make sure that 2 sets are not given consequently
       if ((prev === 'A' || prev === 'B') && (inputStr[i] === 'A' || inputStr[i] === 'B')) {
-        showErrorMessage('Μη έγκυρη πρόταση. Δόθηκαν δύο σύνολα στη σειρά.');
+        showMessage('Μη έγκυρη πρόταση. Δόθηκαν δύο σύνολα στη σειρά.', '#error_msg', 3000);
         return;
       }
 
       //make sure that 2 union or intersection signs are not given consequently
       if ((prev === '\u222A' || prev === '\u2229') && (inputStr[i] === '\u2229' || inputStr[i] === '\u222A')) {
-        showErrorMessage('Μη έγκυρη πρόταση. Δόθηκε ' +prev+ ' και αναμένεται A, Β, (, ' + '\u2205');
+        showrMessage('Μη έγκυρη πρόταση. Δόθηκε ' +prev+ ' και αναμένεται A, Β, (, ' + '\u2205', '#error_msg', 3000);
         return;
       }
 
       //make sure that after a left parenthesis we get: ', union sign, intersection sign
       if(prev === ')' && (inputStr[i] === 'A' || inputStr[i] === 'B' || inputStr[i] === "\u2205")) {
-        showErrorMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται \u222A, \u2229, '");
+        showMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται \u222A, \u2229, '", '#error_msg', 3000);
         return;
       }
 
       //make sure that we do not get a complement sign after a union sign or an intersection sign
       if ((prev === '\u222A' || prev === '\u2229') &&  inputStr[i] === "'") {
-        showErrorMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται A, B, (, " +'\u2205');
+        showMessage("Μη έγκυρη πρόταση. Δόθηκε " +prev+ " , αναμένεται A, B, (, " +'\u2205', '#error_msg', 3000);
         return;
       }
 
@@ -502,15 +560,139 @@
     }
 
     if(mystack !== "") {  //if stack is not empty then left parethesis and right parenthesis are not balanced and paired
-      showErrorMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.');
+      showMessage('Μη έγκυρη πρόταση. Οι παρενθέσεις δεν είναι ισοζυγισμένες.', '#error_msg', 3000);
     }
 
     //Now we'll visualize user's set in the Venn diagram
-    myResult = myParser(inputStr);      /////// RESET POTE??
+    myResult = myParser(inputStr); 
     // console.log("Finished:");
     console.log(myResult);
+    // debugger;
 
     highlightVenn();
+
+    //check if de morgan property applies to the input
+    arrays = getArraysOfTerms(inputStr);
+    let  terms = arrays.terms;
+    let operators = arrays.operators;
+    let apostrophes = arrays.apostrophes;
+
+    let DeMorganFalse = 0;
+    // debugger;
+    console.log(terms);
+    console.log(operators);
+    console.log(apostrophes);
+    console.log('dmskfnsklgndkl');
+
+    //input type: (AUBUAU...)'
+    debugger;
+    if (apostrophes.length === 1 && apostrophes[0] === 1) {
+      console.log('We have only one term and it is a complement');
+      arrays = getArraysOfTerms(terms[0]);
+
+      terms = arrays.terms;
+      operators = arrays.operators;
+      apostrophes = arrays.apostrophes;
+      console.log(terms);
+      console.log(operators);
+      console.log(apostrophes);
+      console.log('SECOND TIME PARSING');
+
+      // debugger;
+
+      if(operators.length !== 0) {
+
+        //check if the operators consist only of union signs or intersection signs
+        let op = operators[0];
+        for (i = 1; i < operators.length; i++) {
+          if (op !== operators[i]) { //if the first operator does not match with this operator then it's not the de morgan property
+            DeMorganFalse = 1;
+            break;
+          }
+        }
+
+        if (DeMorganFalse !== 1) {  //if the de morgan property applies to the input
+          message = 'Ιδιότητα De Morgan, ισχύει: ' + inputStr + ' = ';
+
+          if (op === '\u222A') {
+            op = '\u2229';
+          } else {
+            op === '\u222A';
+          }
+
+          let j, str;
+          for(j = 0; j < terms.length; j++) {
+            if (j === terms.length - 1) {
+              op = "";
+            }
+
+            if (apostrophes[j] === 1) { //ΤΙ ΓΙΝΕΤΑΙ ΑΝ ΕΧΟΥΜΕ ΠΟΛΛΑ "'''..."?
+              str = "''" + op;
+            } else {
+              str = "'" + op;
+            }
+
+            if (terms[j].length > 1) {  //embedded term
+              message = message + "(" + terms[j] + ")" + str;
+            } else {
+              message = message + terms[j] + str;
+            }
+            
+          }
+
+          showMessage(message, '#deMorgan_msg', 100000);
+        }
+      }
+    } else {
+
+      //input type: A'UB'U...
+      for (i = 0; i < apostrophes.length; i++) {
+        if ( apostrophes[i] != 1) {
+          DeMorganFalse = 1;
+          break;
+        }
+      }
+      op = operators[0];
+      for(i=1; i < operators.length; i++) {
+        if (operators[i] != op) {
+          DeMorganFalse = 1;
+          break;
+        }
+      }
+
+      if (DeMorganFalse === 0) { 
+        //at this point all the operators are of the same type and every term has a complement
+        message = 'Ιδιότητα De Morgan, ισχύει: ' + inputStr + ' = (';
+
+        if (op === '\u222A') {
+          op = '\u2229';
+        } else {
+          op === '\u222A';
+        }
+
+        console.log(terms);
+        console.log(operators);
+        console.log(apostrophes);
+
+        for(j = 0; j < terms.length; j++) {
+          if (j === terms.length - 1) {
+            op = "";
+          }
+
+          if (terms[j].length > 1) {  //embedded term
+            message = message + "(" + terms[j] + ")" + op;
+          } else {
+            message = message + terms[j] + op;
+          }
+        
+        }
+        message = message + ")'";
+        showMessage(message, '#deMorgan_msg', 100000);
+      }
+    }
+    
+  
+
 
   });
 
