@@ -14,7 +14,5 @@ function include(file) {
 /* Include Many js files */
 include('functions.js');
 include('probabilities.js');
-// console.log("master:" + "circle1 rad = " + crcl1.r1 + " circle2 rad = " + crcl1.r2)
-// console.log("master: "+ myResult);
 
 });

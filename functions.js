@@ -1,4 +1,4 @@
-//$(document).ready(function(){   //make sure the document is already loaded
+// $(document).ready(function(){   //make sure the document is already loaded
 
   var myResult = [0,0,0,0];
 
@@ -32,34 +32,44 @@
   //Let's start by creating a circle:
   var circle1, circle2;
   //////////////////////////////////////////////////////////////////////////
-  function drawCircles() {
-    circle1 = canvas.append("circle")
+  function drawCircles(canvas, colour1 = "none", colour2 = "none") {
+    let circleA = canvas.append("circle")
                   .attr('id', 'c1')
                   .attr("cx", crcl1.x1) //we want to give it a horizontal position
                   .attr("cy", crcl1.y1)
                   .attr("r", crcl1.r1) //radius
-                  .attr("stroke",crcl1.color) 
+                  .attr("stroke",crcl1.color)
                   .attr("stroke-width",3)
-                  .attr("fill","none");
+                  .attr("fill",colour1)
+                  .attr("fill-opacity", 0.50);
 
 
-    circle2 = canvas.append("circle")
+    let circleB = canvas.append("circle")
                   .attr("cx", crcl2.x2) //we want to give it a horizontal position
                   .attr("cy", crcl2.y2)
                   .attr("r", crcl2.r2) //radius
-                  .attr("stroke", crcl2.color) 
+                  .attr("stroke", crcl2.color)
                   .attr("stroke-width",3)
-                  .attr("fill","none")
-                  .attr('id', 'c2');
+                  .attr("fill",colour2)
+                  .attr('id', 'c2')
+                  .attr("fill-opacity", 0.50);
+
+    return {circleA, circleB};
   }
 
-  drawCircles();
+  let circles = drawCircles(canvas);
+  circle1 = circles.circleA;
+  circle2 = circles.circleB;
+  // {circle1, circle2} = drawCircles();
 
   function resetCanvas() {
     d3.select("svg")
       .selectAll("*")
       .remove();
-    drawCircles();
+    // {circle1, circle2} = drawCircles();
+    circles = drawCircles(canvas);
+    circle1 = circles.circleA;
+    circle2 = circles.circleB;
     canvas.style("background-color","#e4dada");
   }
   //////////////////////////////////////////////////////////////////////////
@@ -69,7 +79,7 @@
                   .attr("cx", crcl2.x2) //we want to give it a horizontal position
                   .attr("cy", crcl2.y2)
                   .attr("r", crcl2.r2) //radius
-                  .attr("stroke", crcl2.color) 
+                  .attr("stroke", crcl2.color)
                   .attr("stroke-width",3)
                   .attr("fill","none")
                   .attr('id', 'c2');
@@ -79,7 +89,7 @@
                   .attr("cx", crcl1.x1) //we want to give it a horizontal position
                   .attr("cy", crcl1.y1)
                   .attr("r", crcl1.r1) //radius
-                  .attr("stroke",crcl1.color) 
+                  .attr("stroke",crcl1.color)
                   .attr("stroke-width",3)
                   .attr("fill","none");
 
@@ -529,7 +539,7 @@
     }
 
     //Now we'll visualize user's set in the Venn diagram
-    myResult = myParser(inputStr); 
+    myResult = myParser(inputStr);
     // console.log("Finished:");
     console.log(myResult);
 
@@ -579,10 +589,10 @@
             }
 
             //apply the apostrophe, if any, on the terms
-            if (apostrophes[j] === 1) { 
-              
+            if (apostrophes[j] === 1) {
+
               if (terms[j].length > 1) {  //embedded term
-                terms[j] = "(" + terms[j] + ")'" 
+                terms[j] = "(" + terms[j] + ")'"
               } else {
                 terms[j] = terms[j] + "'"
               }
@@ -595,7 +605,7 @@
             } else {
               message = message + terms[j] + str;
             }
-            
+
           }
 
           showMessage(message, '#deMorgan_msg', 10000);
@@ -618,7 +628,7 @@
         }
       }
 
-      if (DeMorganFalse === 0) { 
+      if (DeMorganFalse === 0) {
         //at this point all the operators are of the same type and every term has a complement
         message = 'Ιδιότητα De Morgan, ισχύει: ' + inputStr + ' = (';
 
@@ -640,13 +650,13 @@
           } else {
             message = message + terms[j] + op;
           }
-        
+
         }
         message = message + ")'";
         showMessage(message, '#deMorgan_msg', 10000);
       }
     }
-    
+
   });
 
 
@@ -779,4 +789,4 @@
 
   /////////////////////////////////////////////////////////
 
-//});
+// });

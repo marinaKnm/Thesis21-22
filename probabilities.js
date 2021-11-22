@@ -1,3 +1,27 @@
+// $.when(
+//     $.getScript( "functions.js" ),
+//     $.Deferred(function( deferred ){
+//         $( deferred.resolve );
+//     })
+// ).done(function(){
+
+// import { canvas, crcl1, crcl2, myResult, left_limit, drawCircles } from 'functions.js'; //./
+
+
+var canvas1 = d3.select("#probability")
+           .append("svg") //so we append the svg element to our page
+           //now let's give some properties
+           .attr("width", 725) //when we are styling svg elements, we use attr method
+           .attr("height", 500) //instead of style method
+           .style("margin-left","650px")
+           .style("background-color","#e4dada")
+           .style("border","solid 3px");
+
+
+let prob_circles = drawCircles(canvas1, "red", "blue");
+var prob_circle1 = prob_circles.circleA;
+var prob_circle2 = prob_circles.circleB;
+
 var wid = $("svg").width();
 var hgt = $("svg").height();
 var sampleSpace = wid*hgt; //sample space area
@@ -7,12 +31,8 @@ $('#myRange1').on('input', function() {
 
   output1.innerHTML = parseInt(this.value);
   crcl1.r1 = parseInt(this.value);
-  //console.log("probab1! " + crcl1.r1);
-  //console.log("embadon1: " + intersectionArea(crcl1, crcl2));
 
-  //console.log(wid*hgt);
   console.log("probability: " + probability(crcl1, crcl2, myResult));
-  //console.log("cnv: " + canvas.width);
 
 });
 
@@ -89,3 +109,6 @@ function intersectionArea(crcl1, crcl2) { //find Intersection area
     }
     return 0;
 }
+
+
+// });

@@ -5,7 +5,7 @@ body {
     line-height: 1.5em;
     padding-bottom: 25px;
 }
-#container {
+.container {
     width:90%;
     margin:auto;
     padding:10px;
@@ -19,18 +19,6 @@ body {
     border:solid 1px;
     text-align:center;
 }
-
-canvas {
-    border: 1px solid #807d82;
-    margin: auto;
-    margin-top: 30px;
-    margin-left: 400px;
-    float: right;
-}
-
-/* circle {
-  cursor: move;
-} */
 
 .Button {
     padding:10px;
@@ -56,7 +44,7 @@ canvas {
   text-align: center;
   /* margin-top: 10px; */
   /* display: block; */
-  /* left: 100px; */ 
+  /* left: 100px; */
 }
 
 .slider {
@@ -68,14 +56,14 @@ canvas {
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    
+
     display: block;
   }
-  
+
   .slider:hover {
     opacity: 1;
   }
-  
+
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -84,7 +72,7 @@ canvas {
     background: #04AA6D;
     cursor: pointer;
   }
-  
+
   .slider::-moz-range-thumb {
     width: 25px;
     height: 25px;
