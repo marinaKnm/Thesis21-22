@@ -516,6 +516,12 @@
         return;
       }
 
+      //make sure we do not get consequent complement signs
+      if (prev === "'" && inputStr[i] === "'") {
+        showMessage("Μη έγκυρη πρόταση. Το συμπλήρωμα του συμπληρώματος χρειάζεται παρενθέσεις π.χ. ((Α')')'", '#error_msg', 3000);
+        return;
+      }
+
       //make sure that left parethesis and right parenthesis are balanced and paired
       if (inputStr[i] === '(') {
         mystack = mystack + '(';
