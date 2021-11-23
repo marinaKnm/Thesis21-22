@@ -32,7 +32,7 @@
   //Let's start by creating a circle:
   var circle1, circle2;
   //////////////////////////////////////////////////////////////////////////
-  function drawCircles(canvas, colour1 = "none", colour2 = "none") {
+  function drawCircles(canvas, colour1 = "none", colour2 = "none", opacity=1) {
     let circleA = canvas.append("circle")
                   .attr('id', 'c1')
                   .attr("cx", crcl1.x1) //we want to give it a horizontal position
@@ -41,7 +41,7 @@
                   .attr("stroke",crcl1.color)
                   .attr("stroke-width",3)
                   .attr("fill",colour1)
-                  .attr("fill-opacity", 0.50);
+                  .attr("fill-opacity", opacity);
 
 
     let circleB = canvas.append("circle")
@@ -52,7 +52,7 @@
                   .attr("stroke-width",3)
                   .attr("fill",colour2)
                   .attr('id', 'c2')
-                  .attr("fill-opacity", 0.50);
+                  .attr("fill-opacity", opacity);
 
     return {circleA, circleB};
   }

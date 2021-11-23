@@ -7,6 +7,9 @@
 
 // import { canvas, crcl1, crcl2, myResult, left_limit, drawCircles } from 'functions.js'; //./
 
+$.getScript("functions.js", function() {
+  console.log('PROBABILITIES');
+})
 
 var canvas1 = d3.select("#probability")
            .append("svg") //so we append the svg element to our page
@@ -18,7 +21,7 @@ var canvas1 = d3.select("#probability")
            .style("border","solid 3px");
 
 
-let prob_circles = drawCircles(canvas1, "red", "blue");
+let prob_circles = drawCircles(canvas1, "red", "blue", 0.5);
 var prob_circle1 = prob_circles.circleA;
 var prob_circle2 = prob_circles.circleB;
 
