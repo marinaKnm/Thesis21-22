@@ -12,10 +12,28 @@ $.getScript("functions.js", function(){
     var output6 = document.getElementById("demo6");
     output6.innerHTML = parseInt(slider6.value);
 
+
+      var crcl_a = {
+        x1: 250,
+        y1: 250,
+        r1: 200,//150, //72,//70,//233, //150
+        color: '#d1040b'  //red
+      }
+
+      var crcl_b = {
+        x2: 450,//306,//302//450,
+        y2: 250,
+        r2: 200,//80,//103;//81; //80
+        color: '#5604d1'
+      }
+
+    // var crcl_a = crcl1;
+    // var crcl_b = crcl2;
+
     $(function() {
-      var crcl_a = crcl1;
-      var crcl_b = crcl2;
-      
+      // var crcl_a = crcl1;
+      // var crcl_b = crcl2;
+
       document.getElementById("demo4").innerHTML = circleArea(crcl_a.r1) /sampleSpace;
       document.getElementById("demo5").innerHTML = circleArea(crcl_b.r2) /sampleSpace;
       document.getElementById("demo6").innerHTML =  intersectionArea(crcl_a, crcl_b)/sampleSpace;
@@ -31,9 +49,9 @@ $.getScript("functions.js", function(){
               .style("border","solid 3px");
 
 
-    var crcl_a = crcl1;  
-    var crcl_b = crcl2;
-   
+    // var crcl_a = crcl1;
+    // var crcl_b = crcl2;
+
     let prob_circles = drawCircles(canvas1, crcl_a, crcl_b, "red", "blue", 0.5);
     var prob_circle1 = prob_circles.circleA;
     var prob_circle2 = prob_circles.circleB;
@@ -126,18 +144,6 @@ $.getScript("functions.js", function(){
         return 0;
     }
 
-    // var slider4= document.getElementById("prob_a");
-    // var output4 = document.getElementById("demo4");
-    // output4.innerHTML = parseInt(slider4.value);
-
-    // var slider5= document.getElementById("prob_b");
-    // var output5 = document.getElementById("demo5");
-    // output5.innerHTML = parseInt(slider5.value);
-
-    // var slider6= document.getElementById("intersect");
-    // var output6 = document.getElementById("demo6");
-    // output6.innerHTML = parseInt(slider6.value);
-
     $('#demo4').on('load', function() {
       output4.innerHTML = circleArea(crcl_a.r1) /sampleSpace;
     })
@@ -151,7 +157,7 @@ $.getScript("functions.js", function(){
       output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
     });
 
-    
+
 
     $('#prob_b').on('input', function() {
 
@@ -162,15 +168,15 @@ $.getScript("functions.js", function(){
       output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
     });
 
-    
+
     $('#intersect').on('input', function() {
       crcl_b.x2 = left_limit + Number(this.value);
       prob_circle2.attr("cx", crcl_b.x2);
 
 
       output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
-      
-      console.log("probability: " + probability(crcl1, crcl2, myResult));
+
+      // console.log("probability: " + probability(crcl1, crcl2, myResult));
 
     });
   });
