@@ -47,13 +47,17 @@
       </p> -->
     </div>
     <div id = "probability">
-
-
     </div>
-      <!-- <canvas id="canvas" width=725 height=500></canvas> -->
-      <script src="master.js" defer></script>
-      <!-- <script src="functions.js" defer></script>
-      <script src="probabilities.js"></script> -->
-
+    <div class="slidecontainer" id=slide_prob>
+      <input type="range" min="1" max="200" class="slider" id="prob_a">
+      <p>P(Α) = <span id="demo4"></span></p>
+      <input type="range" min="1" max="200" class="slider" id="prob_b">
+      <p>P(Β) = <span id="demo5"></span></p>
+      <input type="range" min="1" max="200" class="slider" id="intersect">
+      <p>P(A&#8745;B) <span id="demo6"></span></p>
+    </div>
+    
+    <script src="probabilities.js"></script>
+      
   </body>
 </html>

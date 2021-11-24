@@ -7,14 +7,14 @@
   var crcl1 = {
     x1: 250,
     y1: 250,
-    r1: 150, //72,//70,//233, //150
+    r1: 200,//150, //72,//70,//233, //150
     color: '#d1040b'  //red
   }
 
   var crcl2 = {
     x2: 450,//306,//302//450,
     y2: 250,
-    r2: 80,//103;//81; //80
+    r2: 200,//150,//80,//103;//81; //80
     color: '#5604d1'
   }
 
@@ -32,23 +32,23 @@
   //Let's start by creating a circle:
   var circle1, circle2;
   //////////////////////////////////////////////////////////////////////////
-  function drawCircles(canvas, colour1 = "none", colour2 = "none", opacity=1) {
+  function drawCircles(canvas, ca, cb, colour1 = "none", colour2 = "none", opacity=1) {
     let circleA = canvas.append("circle")
                   .attr('id', 'c1')
-                  .attr("cx", crcl1.x1) //we want to give it a horizontal position
-                  .attr("cy", crcl1.y1)
-                  .attr("r", crcl1.r1) //radius
-                  .attr("stroke",crcl1.color)
+                  .attr("cx", ca.x1) //we want to give it a horizontal position
+                  .attr("cy", ca.y1)
+                  .attr("r", ca.r1) //radius
+                  .attr("stroke",ca.color)
                   .attr("stroke-width",3)
                   .attr("fill",colour1)
                   .attr("fill-opacity", opacity);
 
 
     let circleB = canvas.append("circle")
-                  .attr("cx", crcl2.x2) //we want to give it a horizontal position
-                  .attr("cy", crcl2.y2)
-                  .attr("r", crcl2.r2) //radius
-                  .attr("stroke", crcl2.color)
+                  .attr("cx", cb.x2) //we want to give it a horizontal position
+                  .attr("cy", cb.y2)
+                  .attr("r", cb.r2) //radius
+                  .attr("stroke", cb.color)
                   .attr("stroke-width",3)
                   .attr("fill",colour2)
                   .attr('id', 'c2')
@@ -57,7 +57,7 @@
     return {circleA, circleB};
   }
 
-  let circles = drawCircles(canvas);
+  let circles = drawCircles(canvas, crcl1, crcl2);
   circle1 = circles.circleA;
   circle2 = circles.circleB;
   // {circle1, circle2} = drawCircles();
@@ -67,7 +67,7 @@
       .selectAll("*")
       .remove();
     // {circle1, circle2} = drawCircles();
-    circles = drawCircles(canvas);
+    circles = drawCircles(canvas, crcl1, crcl2);
     circle1 = circles.circleA;
     circle2 = circles.circleB;
     canvas.style("background-color","#e4dada");

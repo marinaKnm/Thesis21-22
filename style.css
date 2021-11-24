@@ -39,12 +39,7 @@ body {
 
 #deMorgan_msg {
   color: rgb(5, 5, 167);
-  float: inherit;
-  position: relative;
   text-align: center;
-  /* margin-top: 10px; */
-  /* display: block; */
-  /* left: 100px; */
 }
 
 .slider {
@@ -86,10 +81,4 @@ body {
       margin-top: 50px;
   }
 
-  /* #myRange3 {
-    float: right;
-  } */
-
-  #Demo3 {
-    float: right;
-  }
+  
