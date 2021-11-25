@@ -11,7 +11,7 @@
     <div class="container">
 
   		<h2>Πράξεις Συνόλων</h2>
-      <p>Ένα σύνολο ορίζεται ως μία συλλογή αντικειμένων τα οποία είναι μοναδικά και μη διατεταγμένα. Η θεωρία πιθανοτήτων κάνει εκτεταμένη χρήση
+      <p>Ένα σύνολο ορίζεται ως μία συλλογή αντικειμένων τα οποία είναι <em>μοναδικά και μη διατεταγμένα</em>. Η θεωρία πιθανοτήτων κάνει εκτεταμένη χρήση
         συνόλων και μαθηματικών πράξεων μεταξύ συνόλων. Παρακάτω μπορείτε να δοκιμάσετε διάφορες πράξεις μεταξύ συνόλων και να παρατηρήσετε την
         αντίστοιχη απεικόνιση.
       </p>
@@ -43,19 +43,43 @@
     </div>
     <div class = "container">
       <h2>Πιθανότητες Συνόλων</h2>
-      <!-- <p>
-      </p> -->
+      <p>Για να περιγράψουμε μία αβέβαιη κατάσταση με μαθηματικούς όρους χρησιμοποιούμε μοντέλα πιθανότητας. Τα θεμελιώδη στοιχεία ενός τέτοιου μοντέλου είναι:
+        <ul>
+          <li>O <strong>δειγματικός χώρος Ω</strong> ο οποίος αποτελείται από το σύνολο όλων των δυνατών αποτελεσμάτων.</li>
+          <li></li>
+        </ul>
+      </p>
+
+    <div class="parent">
+
+      <div class="probability">
+        <ul id="probs">
+          <li>P(A&#8746B) = P(A)+P(B)-P(A&#8745;B) = <span id="pUnion"></span></li>
+          <li>P(A') = P(Ω)-P(A) = 1-P(A) = <span id="pACompl"></span></li>
+          <li>P(B') = P(Ω)-P(Β) = 1-P(Β) = <span id="pBCompl"></span></li>
+          <li>P(A'&#8745;B') = P[(AUB)'] = <span id="pICompl"></span></li>
+          <li>P(A'UB') = P[(A&#8745;B)'] = <span id="pUCompl"></span></li>
+          <li>P(A&#8745;B') = P(A)-P(A&#8745;B) = <span id="p1"></span></li>
+          <li>P(A'&#8745;B) = P(B)-P(A&#8745;B) = <span id="p2"></span></li>
+          <li>P[(A&#8745;B')U(A'&#8745;B)] = P(AUB)-P(A&#8745;B) = <span id="p3"></span></li>        
+        </ul>
+      </div>
+
+      <div class = "probability" id=probability></div>
+
     </div>
-    <div id = "probability">
+
     </div>
     <div class="slidecontainer" id=slide_prob>
       <input type="range" min="1" max="200" value="200" class="slider" id="prob_a">
       <p>P(Α) = <span id="demo4"></span></p>
       <input type="range" min="1" max="200" value="200" class="slider" id="prob_b">
       <p>P(Β) = <span id="demo5"></span></p>
-      <input type="range" min="1" max="200" value="200" class="slider" id="intersect">
+      <input type="range" min="0" max="200" value="200" class="slider" id="intersect">
       <p>P(A&#8745;B) = <span id="demo6"></span></p>
     </div>
+    
+    
 
     <script src="probabilities.js"></script>
 

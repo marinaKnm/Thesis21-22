@@ -1,5 +1,7 @@
 $.getScript("functions.js", function(){
   $(document).ready(function(){
+
+    //get the values of the range sliders
     var slider4= document.getElementById("prob_a");
     var output4 = document.getElementById("demo4");
     output4.innerHTML = parseInt(slider4.value);
@@ -12,46 +14,76 @@ $.getScript("functions.js", function(){
     var output6 = document.getElementById("demo6");
     output6.innerHTML = parseInt(slider6.value);
 
+    
+    var crcl_a = {
+      x1: crcl1.x1,
+      y1: crcl1.y1,
+      r1: crcl1.r1,//150, //72,//70,//233, //150
+      color: '#d1040b'  //red
+    }
 
-      var crcl_a = {
-        x1: 250,
-        y1: 250,
-        r1: 200,//150, //72,//70,//233, //150
-        color: '#d1040b'  //red
-      }
+    var crcl_b = {
+      x2: crcl2.x2,//306,//302//450,
+      y2: crcl2.y2,
+      r2: crcl2.r2,//80,//103;//81; //80
+      color: '#5604d1'
+    }
+  
 
-      var crcl_b = {
-        x2: 450,//306,//302//450,
-        y2: 250,
-        r2: 200,//80,//103;//81; //80
-        color: '#5604d1'
-      }
+    var basic_probabilities = {
+      pa: undefined,    //P(B)
+      pb: undefined,    //P(A)
+      paub: undefined,  //P(A UNION B)
+      paib: undefined   //P(A INTERSECTION B)
+    };
 
-    // var crcl_a = crcl1;
-    // var crcl_b = crcl2;
+    function calculateBasicProbalities(crcl1, crcl2) {  //calculates every probability we need for the calculations
+      //calculate each basic probability
+      basic_probabilities.pa = circleArea(crcl1.r1) / sampleSpace;
+      basic_probabilities.pb = circleArea(crcl2.r2) / sampleSpace;
+      basic_probabilities.paib = intersectionArea(crcl1, crcl2) / sampleSpace;
+      basic_probabilities.paub = basic_probabilities.pa + basic_probabilities.pb - basic_probabilities.paib;
+    }
+    
+    function UpdateProbabilities() {  //calculates and renders the probabilities
+      $('#pUnion').html((basic_probabilities.pa + basic_probabilities.pb - basic_probabilities.paib).toFixed(4));
+      $('#pACompl').html((1 - basic_probabilities.pa).toFixed(4));
+      $('#pBCompl').html((1 -  basic_probabilities.pb).toFixed(4));
+      $('#pICompl').html((1 -  basic_probabilities.paub).toFixed(4));
+      $('#pUCompl').html((1 -  basic_probabilities.paib).toFixed(4));
+      $('#p1').html((basic_probabilities.pa -  basic_probabilities.paib).toFixed(4));
+      $('#p2').html((basic_probabilities.pb - basic_probabilities.paib).toFixed(4));
+      $('#p3').html((basic_probabilities.paub - basic_probabilities.paib).toFixed(4));
+    }
 
+    //as soon as the website is loaded assign the corresponding probability to each range slider
     $(function() {
-      // var crcl_a = crcl1;
-      // var crcl_b = crcl2;
+      //calculate each basic probability
+      calculateBasicProbalities(crcl_a, crcl_b);
 
-      document.getElementById("demo4").innerHTML = circleArea(crcl_a.r1) /sampleSpace;
-      document.getElementById("demo5").innerHTML = circleArea(crcl_b.r2) /sampleSpace;
-      document.getElementById("demo6").innerHTML =  intersectionArea(crcl_a, crcl_b)/sampleSpace;
+      console.log(basic_probabilities.pa, basic_probabilities.pb, basic_probabilities.paub, basic_probabilities.paib)
+
+      //render initial values of the range sliders
+      $('#demo4').html(basic_probabilities.pa.toFixed(4));
+      $('#demo5').html(basic_probabilities.pb.toFixed(4));
+      $('#demo6').html(basic_probabilities.paib.toFixed(4));
+
+      //calculate each probability and render them
+      UpdateProbabilities();
     });
 
+    //create a new canvas
     var canvas1 = d3.select("#probability")
               .append("svg") //so we append the svg element to our page
               //now let's give some properties
               .attr("width", 725) //when we are styling svg elements, we use attr method
               .attr("height", 500) //instead of style method
-              .style("margin-left","650px")
+              .style("margin-left","100px")
               .style("background-color","#e4dada")
               .style("border","solid 3px");
 
 
-    // var crcl_a = crcl1;
-    // var crcl_b = crcl2;
-
+    //draw the circles on the canvas
     let prob_circles = drawCircles(canvas1, crcl_a, crcl_b, "red", "blue", 0.5);
     var prob_circle1 = prob_circles.circleA;
     var prob_circle2 = prob_circles.circleB;
@@ -60,35 +92,7 @@ $.getScript("functions.js", function(){
     var hgt = $("svg").height();
     var sampleSpace = wid*hgt; //sample space area
 
-    /*
-    $('#myRange1').on('input', function() {
-
-      output1.innerHTML = parseInt(this.value);
-      crcl1.r1 = parseInt(this.value);
-
-      console.log("probability: " + probability(crcl1, crcl2, myResult));
-
-    });
-
-    $('#myRange2').on('input', function() {
-      output2.innerHTML = parseInt(this.value);
-      crcl2.r2 = parseInt(this.value);
-      //console.log("probab2! " + crcl2.r2);
-      //console.log("embadon2: " + intersectionArea(crcl1, crcl2));
-
-      console.log("probability: " + probability(crcl1, crcl2, myResult));
-    });
-
-    $('#myRange3').on('input', function() {
-      output3.innerHTML = parseInt(this.value);
-      crcl2.x2 = left_limit + Number(this.value);
-      //console.log("probab3! " + crcl1.r1 + " " + crcl2.r2);
-      //console.log("embadon3: " + intersectionArea(crcl1, crcl2));
-
-      console.log("probability: " + probability(crcl1, crcl2, myResult));
-    });
-    */
-
+    
     function probability(crcl1, crcl2, myResult) {
       //only A  only B  INTER(A,B)  (AUB)'
       var globalArea = 0;
@@ -144,40 +148,47 @@ $.getScript("functions.js", function(){
         return 0;
     }
 
-    $('#demo4').on('load', function() {
-      output4.innerHTML = circleArea(crcl_a.r1) /sampleSpace;
-    })
-
+    
     $('#prob_a').on('input', function() {
+      crcl_a.r1 = parseInt(this.value); //input radius
 
-      output4.innerHTML = circleArea(parseInt(this.value)) /sampleSpace;
-      crcl_a.r1 = parseInt(this.value);
+      calculateBasicProbalities(crcl_a, crcl_b); 
+
+      output4.innerHTML = basic_probabilities.pa.toFixed(4);  //update value of range slider
       prob_circle1.attr("r", crcl_a.r1);
-
-      output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
+      output6.innerHTML = basic_probabilities.paib.toFixed(4);  //show the new P(A INTERSECTION B) since the area of the intersection changed
+    
+      //change also the probabilities that should change
+      UpdateProbabilities();
     });
 
 
 
     $('#prob_b').on('input', function() {
+      crcl_b.r2 = parseInt(this.value); //input radius
 
-      output5.innerHTML = circleArea(parseInt(this.value)) /sampleSpace;
-      crcl_b.r2 = parseInt(this.value);
+      calculateBasicProbalities(crcl_a, crcl_b);
+
+      output5.innerHTML = basic_probabilities.pb.toFixed(4);  //update value of range slider
       prob_circle2.attr("r", crcl_b.r2);
-
-      output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
+      output6.innerHTML = basic_probabilities.paib.toFixed(4);  //show the new P(A INTERSECTION B) since the area of the intersection changed
+    
+      //change also the probabilities that should change
+      UpdateProbabilities();
     });
 
 
     $('#intersect').on('input', function() {
+      //change the center of circle B
       crcl_b.x2 = left_limit + Number(this.value);
       prob_circle2.attr("cx", crcl_b.x2);
 
+      calculateBasicProbalities(crcl_a, crcl_b);
 
-      output6.innerHTML = intersectionArea(crcl_a, crcl_b) /sampleSpace;
-
-      // console.log("probability: " + probability(crcl1, crcl2, myResult));
-
+      output6.innerHTML = basic_probabilities.paib.toFixed(4); //show the new P(A INTERSECTION B) since the area of the intersection changed
+    
+      //change also the probabilities that should change
+      UpdateProbabilities();
     });
   });
 });

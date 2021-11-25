@@ -80,5 +80,28 @@ body {
       margin-left: 5%;
       margin-top: 50px;
   }
+  
+  .parent {
+    content: "";
+    display: table;
+    clear: both;
+  }
 
+  .probability {
+    float: left;
+    height: 470px;
+    width: 40%;
+    padding: 0 0;
+  }
+
+  #slide_prob{
+    padding-top: 10px;
+  }
+
+  #probs{
+    font-size: 20px;
+    font-family: 'Arial';
+    line-height: 3rem;
+  }
+ 
   
