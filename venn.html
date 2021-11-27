@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Θεωρία Συνόλων</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js">  </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+      /* Remove the navbar's default margin-bottom and rounded borders */
+      .navbar {
+        margin-bottom: 0;
+        border-radius: 0;
+      }
+
+      /* Add a gray background color and some padding to the footer */
+      footer {
+        background-color: #f2f2f2;
+        padding: 25px;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        background-color: #D3D3D3;
+        display: block;
+        margin-top: 0;
+      }
+
+      .breadcrumb {
+        background-color: #DCDCDC;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="index.html">Αρχική</a></li>
+          <li><a href="#">Ποιοί είμαστε</a></li>
+          <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Πιθανότητες <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="venn.html">Διάγραμμα Venn</a></li>
+              <li><a href="#">Page 1-2</a></li>
+              <li><a href="#">Page 1-3</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Στατιστική</a></li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+
+
+    <br>
+    <br>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Αρχική</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Διάγραμμα Venn</li>
+      </ol>
+    </nav>
+
+    <div class="container">
+  		<h2>Πράξεις Συνόλων</h2>
+      <p>Ένα σύνολο ορίζεται ως μία συλλογή αντικειμένων τα οποία είναι <em>μοναδικά και μη διατεταγμένα</em>. Η θεωρία πιθανοτήτων κάνει εκτεταμένη χρήση
+        συνόλων και μαθηματικών πράξεων μεταξύ συνόλων επομένως η εξοικείωση μαζί τους είναι σημαντική. Παρακάτω ορίζουμε τις βασικές πράξεις δύο συνόλων S και Τ:
+        <ul>
+          <li><strong>Ένωση</strong>: S&#8746;T = {x | x&#8712;S ή x&#8712;Τ}</li>
+          <li><strong>Τομή</strong>: S&#8745;T = {x | x&#8712;S και x&#8712;Τ}</li>
+          <li><strong>Συμπλήρωμα</strong>: S' = {x&#8712;Ω | x&#8713;S} δεδομένου ενός καθολικού συνόλου Ω</li>
+          </li>
+        </ul>
+      </p>
+      <h3>Ιδιότητες πράξεων συνόλων</h3>
+      <p>
+        Οι ιδιότητες αυτές είναι άμεσες συνέπειες των ορισμών των πράξεων συνόλων.
+        <ul>
+          <li>(S')' = S</li>
+          <li>S&#8745;S' = &#8709;</li>
+          <li>S&#8746;Ω = Ω</li>
+          <li>S&#8745;Ω = S</li>
+          <li>S&#8746;T = T&#8746;S</li>
+          <li>Ιδιαίτερο ενδιαφέρον παρουσιάζει η <em>ιδιότητα De Morgan για τα σύνολα Α<sub>1</sub>,A<sub>2</sub>,...,A<sub>n</sub></em>:
+            <ul>
+              <li>(Α<sub>1</sub> &#8746; A<sub>2</sub> &#8746; ... &#8746; A<sub>n</sub>)' = Α<sub>1</sub>' &#8745; A<sub>2</sub>' &#8745; ... &#8745; A<sub>n</sub>'</li>
+              <li>(Α<sub>1</sub> &#8745; A<sub>2</sub> &#8745; ... &#8745; A<sub>n</sub>)' = Α<sub>1</sub>' &#8746; A<sub>2</sub>' &#8746; ... &#8746; A<sub>n</sub>'</li>
+            </ul>
+          </li>
+        </ul>
+      </p>
+      <p>
+        Ακολουθεί ένα διαδραστικό διάγραμμα Venn στο οποίο προβάλλουμε δύο σύνολα Α (κόκκινο) και Β (μωβ) μέσα στο καθολικό σύνολο Ω. Μπορείτε να εισάγετε οποιαδήποτε πράξη μεταξύ των συνόλων και θα χρωματιστεί το
+        χωρίο που αναλογεί στην πράξη αυτή. Επίσης, πειραματιστείτε αυξομειώνοντας τις ακτίνες των κύκλων και την απόσταση των κέντρων τους.
+      </p>
+
+      <input class = "Button" type="button" id="A" value = "A">
+      <input class = "Button" type="button" id="B" value = "B">
+      <input class = "Button" type="button" id="Union" value = "&#8746">
+      <input class = "Button" type="button" id="Intersection" value = "&#8745;">
+      <input class = "Button" type="button" id="Compl" value = "'">
+      <input class = "Button" type="button" id="leftPar" value = "(">
+      <input class = "Button" type="button" id="rightPar" value = ")">
+      <input class = "Button" type="button" id="EmptySet" value = "&#8709;">
+      <input class = "Button" type="button" id="Delete" value = "del">
+      <div class="text-box" id="set"></div>
+      <div id="error_msg" class="message"></div>
+      <input class = "Button" type="submit" id="Submit" value = "Submit">
+      <input class = "Button" type="button" id="Reset" value = "Reset">
+    </div>
+    <div id="venn">
+      <div id="deMorgan_msg" class=message></div>
+    </div>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="200" value="200" class="slider" id="myRange1">
+      <p>Ακτίνα του Α: <span id="demo1"></span></p>
+      <input type="range" min="1" max="200" value="200" class="slider" id="myRange2">
+      <p>Ακτίνα του Β: <span id="demo2"></span></p>
+      <input type="range" min="1" max="200" value="200" class="slider" id="myRange3">
+      <p>Απόσταση κέντρων: <span id="demo3"></span></p>
+    </div>
+    <div class = "container">
+      <h2>Πιθανότητες Συνόλων</h2>
+      <p>Για να περιγράψουμε μία αβέβαιη κατάσταση με μαθηματικούς όρους χρησιμοποιούμε μοντέλα πιθανότητας. Τα θεμελιώδη στοιχεία ενός τέτοιου μοντέλου είναι:
+        <ul>
+          <li>O <strong>δειγματικός χώρος Ω</strong> ο οποίος αποτελείται από το σύνολο <em>όλων</em> των δυνατών αποτελεσμάτων.</li>
+          <li>Ο <strong>νόμος πιθανότητας</strong> ο οποίος σε ένα σύνολο Α δυνατών αποτελεσμάτων (Α &#8838; Ω), ή αλλιώς ενδεχόμενο,
+            αναθέτει έναν μη αρνητικό αριθμό P(A) o οποίος δείχνει την πιθανότητα πραγματοποίησης του Α σε έναν δειγματικό χώρο Ω.</li>
+        </ul>
+      </p>
+      <h3>Διακριτός Δειγματικός Χώρος Ω</h3>
+      <p>
+        Έστω ότι ο Ω είναι πεπερασμένος και αποτελείται από Ν = |Ω| εξίσου πιθανά απλά ενδεχόμενα και το γεγονός Α περιέχει |Α| πιθανά αποτελέσματα.
+        Για το ενδεχόμενο Α η πιθανότητα του ορίζεται ως εξής:
+        <span id="mathjax_4_1">$$P(A)=\frac{|A|}{N}$$</span>
+      </p>
+      <h3>Συνεχής Δειγματικός Χώρος Ω</h3>
+      <p>
+        Για το ενδεχόμενο Α η πιθανότητα του ορίζεται ως εξής:
+        <span id="mathjax_4_1">$$P(A)=\frac{μ(Α)}{μ(Ω)}$$</span>
+        όπου μ(Α) και μ(Ω) είναι το εμβαδόν των περιοχών Α και Ω αντίστοιχα.
+      </p>
+      <h3>Ιδιότητες</h3>
+      <p>
+        Έστω ότι έχουμε τα ενδεχόμενα Α και Β και τις πιθανότητες P(A) & P(B). Έχουμε τις εξής ιδιότητες:
+        <ul>
+          <li>0 &#8804; P(A) &#8804; 1 για κάθε ενδεχόμενο Α &#8838; Ω</li>
+          <li>P(Ω) = 1</li>
+          <li>P(A&#8746;Β) = P(A) + P(B) για οποιαδήποτε ξένα ενδεχόμενα Α &#8838; Ω και Β &#8838; Ω </li>
+          <li>P(A&#8746;Β) &#8804; P(A) + P(B) όπου η ανισότητα ισχύει όταν δεν είναι ξένα</li>
+        </ul>
+      </p>
+      <p>Παρακάτω απεικονίζουμε δύο ενδεχόμενα Α (κόκκινος κύκλος) και Β (μπλε κύκλος) μέσα στο δειγματικό χώρο Ω ο οποίος απεικονίζεται με
+        το ορθογώνιο παραλληλόγραμμο. Μπορείτε να μεταβάλλετε τις πιθανότητες του κάθε ενδεχομένου και της τομής τους μετακινώντας τον αντίστοιχο κέρσορα και να
+        παρατηρήσετε τις τιμές των πιθανοτήτων.
+      </p>
+    <div class="parent">
+
+      <div class="probability">
+        <ul id="probs">
+          <li>P(A&#8746B) = P(A)+P(B)-P(A&#8745;B) = <span id="pUnion"></span></li>
+          <li>P(A') = P(Ω)-P(A) = 1-P(A) = <span id="pACompl"></span></li>
+          <li>P(B') = P(Ω)-P(Β) = 1-P(Β) = <span id="pBCompl"></span></li>
+          <li>P(A'&#8745;B') = P[(AUB)'] = <span id="pICompl"></span></li>
+          <li>P(A'UB') = P[(A&#8745;B)'] = <span id="pUCompl"></span></li>
+          <li>P(A&#8745;B') = P(A)-P(A&#8745;B) = <span id="p1"></span></li>
+          <li>P(A'&#8745;B) = P(B)-P(A&#8745;B) = <span id="p2"></span></li>
+          <li>P[(A&#8745;B')U(A'&#8745;B)] = P(AUB)-P(A&#8745;B) = <span id="p3"></span></li>
+        </ul>
+      </div>
+
+      <div class = "probability" id=probability></div>
+
+    </div>
+
+    </div>
+    <div class="slidecontainer" id=slide_prob>
+      <input type="range" min="1" max="200" value="200" class="slider" id="prob_a">
+      <p>P(Α) = <span id="demo4"></span></p>
+      <input type="range" min="1" max="200" value="200" class="slider" id="prob_b">
+      <p>P(Β) = <span id="demo5"></span></p>
+      <input type="range" min="0" max="200" value="200" class="slider" id="intersect">
+      <p>P(A&#8745;B) = <span id="demo6"></span></p>
+    </div>
+    <br>
+
+
+    <script src="probabilities.js"></script>
+
+
+    <footer class="w-100 py-4 flex-shrink-0" style="background-color: #DCDCDC;">
+    <div class="container py-4">
+        <div class="row gy-4 gx-5">
+            <div class="col-lg-4 col-md-6">
+                <h5 class="h2 text-white">Social Networks</h5>
+                <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+                <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved. <a class="text-primary" href="#">Bootstrapious.com</a></p>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="h2 text-white">Επικοινωνία</h5>
+                <ul class="list-unstyled text-muted">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Get started</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </footer>
+
+  </body>
+</html>

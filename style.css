@@ -80,7 +80,7 @@ body {
       margin-left: 5%;
       margin-top: 50px;
   }
-  
+
   .parent {
     content: "";
     display: table;
@@ -93,6 +93,7 @@ body {
     width: 40%;
     padding: 0 0;
   }
+
 
   #slide_prob{
     padding-top: 10px;
