@@ -1,0 +1,88 @@
+/* body {
+    font-size: 17px;
+    font-family: arial;
+    background: #e4dada;
+    line-height: 1.5em;
+    padding-bottom: 25px;
+} */
+
+.container {
+    margin: auto;
+    width: 95%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 40%;
+    height: 2px;
+    background: #498fbd;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+
+    /* display: block; */
+    margin-bottom: 10px;
+
+}
+
+.slider:hover {
+opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 15px;
+height: 15px;
+background: #04AA6D;
+cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+width: 25px;
+height: 25px;
+background: #04AA6D;
+cursor: pointer;
+}
+
+#disease {
+    width: 90%
+}
+
+#healthy {
+    width: 90%
+}
+
+#positive_d {
+    width: 90%
+}
+
+#negative_d {
+    width: 90%
+}
+
+#positive_h {
+    width: 90%
+}
+
+#negative_h {
+    width: 90%
+}
+
+ #range_slider {
+    margin-top: 10px; 
+    display: grid;
+    grid-template-columns: 45rem 45rem 45rem;
+}
+
+#Canvas {
+    display: grid;
+    grid-template-columns: 51rem 90rem;
+}
+
+
+
+text {
+    white-space: pre-wrap;  /* new line inside a text element */
+}
