@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Probability Density: Normal Distribution</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/rangeslider.js/2.3.0/rangeslider.min.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/rangeslider.js/2.3.0/rangeslider.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<!--  template.html:   -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <link rel="stylesheet" type="text/css" href="styleDistrib.css">
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      background-color: #D3D3D3;
+      display: block;
+      margin-top: 0;
+    }
+
+    .breadcrumb {
+      background-color: #DCDCDC;
+    }
+
+		.button {
+		  background-color: #A9A9A9;
+			border: none;
+			color: white;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			border-radius: 4px;
+		}
+
+		.button:hover {
+  		background-color: #F5F5F5;
+		}
+
+		.button1 {padding: 18px 642px}
+		.button2 {padding: 18px 645px}
+    .button3 {padding: 18px 636px}
+    .button4 {padding: 18px 641px}
+    .button5 {padding: 18px 645px}
+    .button6 {padding: 18px 631px}
+    .button7 {padding: 18px 647px}
+
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="../index.html">Αρχική</a></li>
+        <li><a href="#">Ποιοί είμαστε</a></li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Πιθανότητες <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="../venn.html">Διάγραμμα Venn</a></li>
+            <li><a href="../bayes_theorem/bayes.html">Θεώρημα Bayes</a></li>
+            <li><a href="distributions.html">Κατανομές</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Στατιστική</a></li>
+      </ul>
+
+    </div>
+  </div>
+  </nav>
+  <br>
+  <br>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="../index.html">Αρχική</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Κατανομές</li>
+    </ol>
+  </nav>
+
+<div class="container">
+
+<h2>Διακριτές Κατανομές</h2>
+
+<br>
+<div class="panel-group">
+
+	<div class="panel">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" href="#collapse1" style = "text-decoration: none;" class = "button button1" type="button">Binomial</a>
+			</h4>
+		<div id="collapse1" class="panel-collapse collapse">
+			<div id="panel1" class="panel-body"> <!--Panel Body1-->
+
+        <div id=nDiv>
+          <p id=nValDisplay></p>
+          <input id="nSlider" class="paramSlider" type="range" min="0"  max="50" step="1" value="16"  data-orientation="vertical" >
+        </div>
+        <div id=prod>
+          <p id=prodvalue></p>
+          <input id="probSlider" class="paramSlider" type="range" value="0.25" step="0.002" min="0" max="1">
+        </div>
+        <div id=subpoisson>
+          <label for="myCheck" style="font-size: 120%;color:#778899"> Poisson: </label>
+          <input type="checkbox" id="poiCheck" onclick="poissonFun()">
+        </div>
+        <div id=subnormal>
+          <label for="myCheck" style="font-size: 120%;color:#778899"> Normal: </label>
+          <input type="checkbox" id="normCheck" onclick="normalFun()">
+        </div>
+
+        <script src="binomial.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#00008B">Binomial</td>
+                <td>\( f(x; n,p) = \binom{n}{x}p^{x}(1-p)^{n-x}\)</td>
+                <td>\(np\)</td>
+                <td>\(np(1-p)\)</td>
+            </tr>
+            <tr>
+                <td style="color:#FF1493">Poisson</td>
+                <td>\( f(x;\lambda) = \dfrac{\lambda^{x}e^{-\lambda}}{x!}\)</td>
+                <td>\(\lambda = np\)</td>
+                <td>\(\lambda = np\)</td>
+            </tr>
+            <tr>
+                <td style="color:#FF8C00">Normal</td>
+                <td>\( f(x;\mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^{2}}} e^{-\dfrac{(x-\mu)^{2}}{2\sigma^{2}}}\)</td>
+                <td>\(\mu = np\)</td>
+                <td>\(\sigma^{2} = np(1-p)\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+		</div>
+	</div>
+
+	<br>
+
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse3" style = "text-decoration: none;" class = "button button3" type="button">Geometric</a>
+      </h4>
+    <div id="collapse3" class="panel-collapse collapse">
+      <div id="panel3" class="panel-body">
+
+        <div id=prod3>
+          <p id=prodvalue3></p>
+          <input id="probSlider3" class="paramSlider" type="range" value="0.5" step="0.002" min="0" max="1">
+        </div>
+
+        <script src="geometric.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#008000">Geometric</td>
+                <td>\( f(x; p) = (1-p)^{x}p\)</td>
+                <td>\(\frac{1}{p}\)</td>
+                <td>\(\frac{1-p}{p^{2}}\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse4" style = "text-decoration: none;" class = "button button4" type="button">Bernoulli</a>
+      </h4>
+    <div id="collapse4" class="panel-collapse collapse">
+      <div id="panel4" class="panel-body"> <!--Panel Body1-->
+
+        <div id=prod4>
+          <p id=prodvalue4></p>
+          <input id="probSlider4" class="paramSlider" type="range" value="0.5" step="0.002" min="0" max="1">
+        </div>
+
+        <script src="bernoulli.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#A52A2A">Bernoulli</td>
+                <td>\(f(x;p) = \begin{cases} p & \text{if } x = 1 \\ 1-p & \text{if } x = 0 \end{cases}\)</td>
+                <td>\(p\)</td>
+                <td>\(p(1-p)\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <h2>Συνεχείς Κατανομές</h2>
+
+  <br>
+
+	<div class="panel">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" href="#collapse2" style = "text-decoration: none;" class = "button button2" type="button">Student</a>
+			</h4>
+		<div id="collapse2" class="panel-collapse collapse">
+			<div id="panel2" class="panel-body">
+        <div id=dfDiv>
+          <p id=dfValDisplay></p>
+          <input id="dfSlider" class="paramSlider" type="range" min="2"  max="50" step="1" value="16"  data-orientation="vertical" >
+        </div>
+        <div id=subnormal01>
+          <label for="myCheck1" style="font-size: 120%;color:#778899"> Normal(0,1): </label>
+          <input type="checkbox" id="normCheck01" onclick="normal01Fun()">
+        </div>
+
+        <script src="student.js"></script>
+
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#FF8C00">Student</td>
+                <td>\( f(t) = \frac{\Gamma(\frac{ν+1}{2})}{\sqrt{ν\pi}\Gamma(\frac{ν}{2})}(1+\frac{t^{2}}{ν})^{-\frac{ν+1}{2}} \), όπου ν οι βαθμοί ελευθερίας</td>
+                <td>\(0\)</td>
+                <td>\(\frac{ν}{ν-2}\)</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+		</div>
+	</div>
+
+  <br>
+
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse5" style = "text-decoration: none;" class = "button button5" type="button">Uniform</a>
+      </h4>
+    <div id="collapse5" class="panel-collapse collapse">
+      <div id="panel5" class="panel-body">
+
+        <div id=aDiv>
+          <p id=aValDisplay></p>
+          <input id="aSlider" class="paramSlider" type="range" min="-10"  max="0" step="0.002" value="-5"  data-orientation="vertical" >
+        </div>
+
+        <div id=bDiv>
+          <p id=bValDisplay></p>
+          <input id="bSlider" class="paramSlider" type="range" min="0"  max="10" step="0.002" value="5"  data-orientation="vertical" >
+        </div>
+
+        <script src="uniform.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#2E8B57">Uniform</td>
+                <td>\(f(x;a,b) = \left\{\begin{array}{ll} \dfrac{1}{b-a} \text{ for } x \in [a,b]\\ 0 \qquad \text{ otherwise } \end{array}\right.\)</td>
+                <td>\(\dfrac{a+b}{2}\)</td>
+                <td>\(\dfrac{(b-a)^{2}}{12}\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse6" style = "text-decoration: none;" class = "button button6" type="button">Exponential</a>
+      </h4>
+    <div id="collapse6" class="panel-collapse collapse">
+      <div id="panel6" class="panel-body">
+
+        <div id=lDiv>
+          <p id=lValDisplay></p>
+          <input id="lSlider" class="paramSlider" type="range" min="0.01"  max="10" step="0.002" value="1"  data-orientation="vertical" >
+        </div>
+
+        <script src="exponential.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#8B0000">Exponential</td>
+                <td>\( f(x;\lambda) = \begin{cases} \lambda e^{-\lambda x} & \text{if } x \geq 0 \\ 0 & \text{otherwise} \end{cases} \)</td>
+                <td>\(\frac{1}{\lambda}\)</td>
+                <td>\(\frac{1}{\lambda^{2}}\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse7" style = "text-decoration: none;" class = "button button7" type="button">Normal</a>
+      </h4>
+    <div id="collapse7" class="panel-collapse collapse">
+      <div id="panel7" class="panel-body">
+
+        <div id=miDiv>
+          <p id=miValDisplay></p>
+          <input id="miSlider" class="paramSlider" type="range" value="0" step="0.002" min="-10" max="10" >
+        </div>
+        <div id=sig>
+          <p id=sigvalue></p>
+          <input id="sigSlider" class="paramSlider" type="range" value="1" step="0.002" min="0.01" max="5">
+        </div>
+
+        <script src="normal.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Διάμεσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#00008B">Normal</td>
+                <td>\( f(x;\mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^{2}}} e^{-\dfrac{(x-\mu)^{2}}{2\sigma^{2}}}\)</td>
+                <td>\(\mu\)</td>
+                <td>\(\sigma^{2}\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+</div>
+</div>
+
+
+  <footer class="w-100 py-4 flex-shrink-0" style="background-color: #DCDCDC;">
+    <div class="container py-4">
+      <div class="row gy-4 gx-5">
+          <div class="col-lg-4 col-md-6">
+              <h5 class="h2 text-white">Social Networks</h5>
+              <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+              <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved. <a class="text-primary" href="#">Bootstrapious.com</a></p>
+            </div>
+            <div class="col-lg-2 col-md-6">
+              <h5 class="h2 text-white">Επικοινωνία</h5>
+              <ul class="list-unstyled text-muted">
+                  <li><a href="#">Home</a></li>
+                  <li><a href="#">About</a></li>
+                  <li><a href="#">Get started</a></li>
+                  <li><a href="#">FAQ</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+</body>
+</html>
