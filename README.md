@@ -46,9 +46,38 @@
 
 ### Προσομοίωση
 * Σχηματισμός δύο κύκλων όπου το καθένα συμβολίζει ένα σύνολο. Ο κύκλος αριστερά δείχνει τα άτομα που βγήκαν θετικά στο τεστ και ο κύκλος δεξιά δείχνει τα άτομα που βγήκαν αρνητικά στην ασθένεια μέσω, κουκκιδών των οποίων το χρώμα δείχνει αν όντως έχουν την ασθένεια ή όχι.
-* Ο χρήστης εισάγει έναν αριθμό μεταξύ [10, 1000] και επιλέγει τι θέλει να αντιπροσωπεύει κάθε κουκκίδα. 
+* Ο χρήστης εισάγει έναν αριθμό μεταξύ [10, 1000] και επιλέγει τι θέλει να αντιπροσωπεύει κάθε κουκκίδα.
 * Μετά την υποβολή κάθε κύκλος γεμίζει με κουκίδες και εμφανίζεται επεξηγηματικό μήνυμα.
 * Όλα αυτά βάσει των πιθανοτήτων παραπάνω.
 * Αν μεταβληθεί κάποια πιθανότητα γίνεται reset της προσομοίωσης.
 * κώδικας που χρησιμοποιήθηκε εν μέρει: https://www.d3-graph-gallery.com/graph/circularpacking_group.html
 
+## Κατανομές
+### Αναπαράσταση Κατανομών
+* Αναπαράσταση κάθε κατανομής με:
+	* την συνάρτηση πυκνότητας πιθανότητας της
+	* και ένα πινακάκι που έχει τον τύπο της συνάρτησης πυκνότητας πιθανότητας της αντίστοιχης κατανομής, την
+	διάμεσο και την διασπορά της.
+
+### Πηγές:
+* Για την Binomial με τις προσεγγίσεις από Poisson και Normal θεωρήσαμε μία καλή ιδέα τον παρακάτω σύνδεσμο
+του Geogebra: https://www.geogebra.org/m/CmHJuJxs
+* Για την Student με την προσέγγιση της από την Τυποποιημένη Κανονική κατανομή θεωρήσαμε μία καλή ιδέα τον
+παρακάτω σύνδεσμο του Geogebra: https://www.geogebra.org/m/enufyhmn
+* Για την κατασκευή μίας διαδραστικής γραφικής παράστασης που μεταβάλλεται ανάλογα με την είσοδο που δίνει ο
+χρήστης ήταν αρκετά χρήσιμος ο σύνδεσμος: https://bl.ocks.org/ctufts/47d9de58c947966701c52a2a31f4a507
+* Άλλες πηγές που βοήθησαν στην κατασκευή ενός ορθοκανονικού συστήματος συντεταγμένων με πλέγμα (το οποίο στην περίπτωση της Binomial μεταβάλλεται) και στο χτύσιμο μίας διαδραστικής γραφικής παράστασης, ήταν:
+  * https://www.tutorialsteacher.com/d3js/axes-in-d3
+	* https://www.tutorialsteacher.com/d3js/create-bar-chart-using-d3js
+	* https://www.essycode.com/posts/adding-gridlines-chart-d3/
+	* https://www.educative.io/edpresso/how-to-create-a-line-chart-using-d3
+	* https://www.d3-graph-gallery.com/graph/custom_axis.html
+	* http://bl.ocks.org/danasilver/0ae7fa639d7bfbffa146
+* Για τους τύπους των γραφικών παραστάσεων βοήθησε ο σύνδεσμος: https://seeing-theory.brown.edu/probability-distributions/index.html#section2
+* Για τα checkboxes βοήθησαν:
+  * https://stackoverflow.com/questions/8423217/jquery-checkbox-checked-state-changed-event
+	* https://www.w3schools.com/howto/howto_js_display_checkbox_text.asp
+* Για τα collapsible panels βοήθησαν:
+  * https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_collapsible_panel&stacked=h
+* Για τα πινακάκια όπου έχουμε τον τύπο της συνάρτησης πυκνότητας πιθανότητας, την διάμεσο και την διασπορά
+κάθε κατανομής βοήθησε: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td
