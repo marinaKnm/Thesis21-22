@@ -77,8 +77,8 @@
   * http://bl.ocks.org/danasilver/0ae7fa639d7bfbffa146
 * Για τους τύπους των γραφικών παραστάσεων βοήθησε ο σύνδεσμος: https://seeing-theory.brown.edu/probability-distributions/index.html#section2
 * Για τα checkboxes βοήθησαν:
-  * https://stackoverflow.com/questions/8423217/jquery-checkbox-checked-state-changed-event
-	* https://www.w3schools.com/howto/howto_js_display_checkbox_text.asp
+ * https://stackoverflow.com/questions/8423217/jquery-checkbox-checked-state-changed-event
+ * https://www.w3schools.com/howto/howto_js_display_checkbox_text.asp
 * Για τα collapsible panels βοήθησαν:
   * https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_collapsible_panel&stacked=h
 * Για τα πινακάκια όπου έχουμε τον τύπο της συνάρτησης πυκνότητας πιθανότητας, την διάμεσο και την διασπορά
