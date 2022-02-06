@@ -69,12 +69,12 @@
 * Για την κατασκευή μίας διαδραστικής γραφικής παράστασης που μεταβάλλεται ανάλογα με την είσοδο που δίνει ο
 χρήστης ήταν αρκετά χρήσιμος ο σύνδεσμος: https://bl.ocks.org/ctufts/47d9de58c947966701c52a2a31f4a507
 * Άλλες πηγές που βοήθησαν στην κατασκευή ενός ορθοκανονικού συστήματος συντεταγμένων με πλέγμα (το οποίο στην περίπτωση της Binomial μεταβάλλεται) και στο χτύσιμο μίας διαδραστικής γραφικής παράστασης, ήταν:
- * https://www.tutorialsteacher.com/d3js/axes-in-d3
- * https://www.tutorialsteacher.com/d3js/create-bar-chart-using-d3js
- * https://www.essycode.com/posts/adding-gridlines-chart-d3/
- * https://www.educative.io/edpresso/how-to-create-a-line-chart-using-d3
- * https://www.d3-graph-gallery.com/graph/custom_axis.html
- * http://bl.ocks.org/danasilver/0ae7fa639d7bfbffa146
+  * https://www.tutorialsteacher.com/d3js/axes-in-d3
+  * https://www.tutorialsteacher.com/d3js/create-bar-chart-using-d3js
+  * https://www.essycode.com/posts/adding-gridlines-chart-d3/
+  * https://www.educative.io/edpresso/how-to-create-a-line-chart-using-d3
+  * https://www.d3-graph-gallery.com/graph/custom_axis.html
+  * http://bl.ocks.org/danasilver/0ae7fa639d7bfbffa146
 * Για τους τύπους των γραφικών παραστάσεων βοήθησε ο σύνδεσμος: https://seeing-theory.brown.edu/probability-distributions/index.html#section2
 * Για τα checkboxes βοήθησαν:
   * https://stackoverflow.com/questions/8423217/jquery-checkbox-checked-state-changed-event
