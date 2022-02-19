@@ -1,0 +1,136 @@
+  /* Remove the navbar's default margin-bottom and rounded borders */
+  .navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+
+  /* Add a gray background color and some padding to the footer */
+  footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    background-color: #D3D3D3;
+    display: block;
+    margin-top: 0;
+  }
+
+/* /////////////// */
+
+  table {
+      border-collapse: collapse;
+      margin-left:0;
+      margin-right:auto;
+  }
+
+  th, td {
+    padding: 2px 6px;
+    text-align: center;
+  }
+
+  .hypinput1{
+      width: 25px;
+      background-color: white;
+  }
+
+  .hypinput3{
+      width: 40px;
+      background-color: white;
+  }
+
+  .hypinput4{
+      width: 60px;
+      background-color: white;
+  }
+
+  .hypinputalpha{
+      width: 40px;
+      background-color: white;
+  }
+
+  select::-ms-expand {
+      display: none;
+  }
+
+  select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-indent: 1px;
+      text-overflow: '';
+      text-align-last:center;
+  }
+
+  .statistics{
+      padding: 0px 2px
+  }
+  /* /////////// */
+  #parent {
+    display: grid;
+    grid-template-columns: 45rem 60rem;
+  }
+
+  #approach {
+    display: grid;
+    grid-template-columns: 60rem 60rem;
+  }
+  /* /////////// */
+  .button {
+    background-color: #A9A9A9;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    padding: 5px 111px;
+    margin: auto;
+    margin-top: 8px;
+  }
+
+  .button:hover {
+    background-color: #F5F5F5;
+  }
+  /* /////////// */
+
+  #math_per {
+    margin-left: 250px;
+  }
+  /* /////////// */
+  /* /////////// */
+
+  p{
+  font-family: 'Roboto Slab', serif;
+  }
+
+  .axis path,
+  .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+  }
+
+  .axis text {
+      font-size: 10px;
+      font-family: 'Roboto Slab', serif;
+  }
+
+  .text-label {
+      font-size: 10px;
+      font-family: 'Roboto Slab', serif;
+  }
+
+  .dot {
+      stroke: #00008B;
+      fill: #00008B;
+  }
+
+  #ex1Slider .slider-selection {
+  	background: #BABABA;
+  }
+
+  .binbar {
+    fill: #A9A9A9;
+    opacity: 0.9;
+  }
