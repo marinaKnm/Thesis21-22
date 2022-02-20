@@ -43,8 +43,8 @@
 
   var h0_sign; // ">=" -> lower, "<=" -> upper or "=" -> equal
   var m0;
-  var fill_const = 1; // 3 possible values: value 1 corresponds to left tail case,
-                      //                    value 2 corresponds to right tail case,
+  var fill_const = 1; // 3 possible values: value 1 corresponds to left tailed case,
+                      //                    value 2 corresponds to right tailed case,
                       //                    value 3 corresponds to two tailed case.
 
   function tailsigns() {
@@ -69,6 +69,13 @@
     document.getElementById("muknotvalue").innerHTML = m0;
   }
 
+  //show the type for calculating z-value or t-value
+  function show_statFunction(str) {
+    $("#performance").html(str);
+    MathJax.typesetPromise();
+    $("#df").empty();
+  }
+
   $('#hyptest').click(function() {
 
     var n = $("#size").val();
@@ -81,62 +88,124 @@
     a = parseFloat(a);
 
     if ($("#parameter1").val() == "mean") { // testing for mean
+      //calculate value of z or t
       var z_t = (avg - m0)*Math.sqrt(n);
       z_t = z_t/deviation; // z or t
       z_t = (Math.round(z_t*100)/100);
-      var result;
-      var pValue; //EDW THA EXOUME TO APOTELESMA p-value !!!!<----
-
+      var pValue;
+      var crit_value;
+      var conclusion, conclusionc; //string with message whether to reject H0 or not
+      var type;
+      
       if ($("#sigma").val() == "known") { //testing for known variance
+        type="z";
 
-        result = '$$z = \\frac{\\bar{x} - μ_0}{σ/\\sqrt[2]{n}} = ' + z_t + '$$';
-        $("#performance").html(result);
-        MathJax.typesetPromise();
-        $("#df").empty();
+        show_statFunction('$$z = \\frac{\\bar{x} - μ_0}{σ/\\sqrt[2]{n}} = ' + z_t + '$$');
 
-        if (fill_const == 3 && z_t > 0) { //AN TO fill_const EINAI 3 THA XREIASTOUME TO P(z <= -|z_t|) !!!!<----
-          pValue = jStat.normal.cdf((-1)*z_t, mean, std);
-        } else { // GIA OPOIADHPOTE ALLH PERIPTWSH THA XREIASTOYME TO P(z <= z_t)  !!!!<----
+        //calculate the cumulative distribution for z for every case
+        //and the inverse of standard normal cumulative distribution for every case
+        if (fill_const == 3) { //if fill_const=3 
+          let q;
+          if (z_t > 0) { q = (-1)*z_t }else{ q = z_t }
+          pValue = jStat.normal.cdf(q, mean, std); //case: P(z <= -|z_t|)
+          crit_value = jStat.normal.inv(1-a/2, 0, 1);
+        } else { //TO P(z <= z_t)
           pValue = jStat.normal.cdf(z_t, mean, std);
+          if (fill_const == 2) {
+            crit_value = jStat.normal.inv(1-a, 0, 1);
+          } else {
+            crit_value = jStat.normal.inv(a, 0, 1);
+          }
         }
 
       } else { //testing for unknown variance
+        type="t";
 
-        result = '$$t = \\frac{\\bar{x} - μ_0}{s/\\sqrt[2]{n}} = ' + z_t + '$$';
-        $("#performance").html(result);
-        MathJax.typesetPromise();
-        $("#df").empty();
+        show_statFunction('$$t = \\frac{\\bar{x} - μ_0}{s/\\sqrt[2]{n}} = ' + z_t + '$$');
 
-        var df = n - 1;
+        var df = n - 1; //degrees of freedom of the studen distribution
         var s = "Βαθμοί Ελευθερίας = n - 1 = " + df;
         $('#df').append('<p>'+ s +'</p>').css("margin", "auto");
 
-        if (fill_const == 3 && z_t > 0) { //AN TO fill_const EINAI 3 THA XREIASTOUME TO P(t <= -|z_t|) !!!!<----
-          pValue = jStat.studentt.cdf((-1)*z_t, n-1); // n-1 = df
-        } else { // GIA OPOIADHPOTE ALLH PERIPTWSH THA XREIASTOYME TO P(t <= z_t)  !!!!<----
-          pValue = jStat.studentt.cdf(z_t, n-1); // n-1 = df
+        //calculate the cumulative distribution for t for every case
+        //and the inverse of the student distribution for every case
+        if (fill_const == 3 && z_t > 0) { //if fill_const = 3  
+          pValue = jStat.studentt.cdf((-1)*z_t, df); // case: P(t <= -|z_t|)
+          crit_value = jStat.studentt.inv(1-a/2,df);
+        } else {  //P(t <= z_t)  
+          pValue = jStat.studentt.cdf(z_t, df); 
+          if (fill_const == 2) {
+            crit_value = jStat.studentt.inv(1-a, df);
+          } else {
+            crit_value = jStat.studentt.inv(a, df);
+          }
         }
 
       }
 
-      if (fill_const == 2) { //AN TO fill_const EINAI 2 THA XREIASTOUME TO P(x >= z_t) = 1 - P(x <= z_t) OPOY x EINAI z OR t !!!!<----
+      //final value of p-value for every case
+      if (fill_const == 2) { //if fill_const=2 then case: P(x >= z_t) = 1 - P(x <= z_t)
         pValue = 1-pValue;
-      } else if (fill_const == 3) { //AN TO fill_const EINAI 3 THA XREIASTOUME TO 2*P(x <= -|z_t|) !!!!<----
+      } else if (fill_const == 3) { //if fill_const=3 then case 2*P(x <= -|z_t|)
         pValue = 2*pValue;
       }
 
       $('#p_value').empty();
       $('#crit_value').empty();
 
-      console.log(z_t,fill_const);
-      var xAxis_p = defineXaxis(z_t, fill_const);
+      var descrp; //message for p-value approach
+      var descrc1, desrc2; //message for critical value approach      
+      if(fill_const == 3) {
+        let w;
+        if (z_t > 0) w = (-1)*z_t; else w = z_t;  
+        descrp = "2\xD7P(X \u2264 "+ w +") = ";
+        descrc1 = type + " \u2264 -|"+ type +"<sub>κ.σ.</sub>|" + " ή " + type + " \u2265 |" + type + "<sub>κ.σ.</sub>|";
+      } else if (fill_const == 2) {
+        descrp = "P(X \u2265 "+ z_t +") = ";
+        descrc1 = type + " \u2265 " + type + "<sub>κ.σ.</sub>";
+      } else {
+        descrp = "P(X \u2264 "+ z_t +") = ";
+        descrc1 = type + " \u2264 " + type + "<sub>κ.σ.</sub>";
+      }
 
+      //show p-value approach
+      var xAxis_p = defineXaxis(z_t, fill_const);
       var div = document.getElementById('p_value');
       div.innerHTML += "<h4><strong>Προσέγγιση με p-τιμή</strong></h4>";
       var svg1 = create_canvas("#p_value", xAxis_p);
-      div.innerHTML = div.innerHTML + "<p>p-value = " + (pValue.toFixed(5)).toString() + "</p>"; //pValue.toString() !!!!<----
-      div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>"; // !!!!<----
+      if (pValue <= a) {  //H0 rejected
+        conclusion = "p-τιμή \u2264 α άρα, απορρίπτουμε την H₀";
+        if (fill_const == 3) {
+          conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]U["+ Math.abs(crit_value).toFixed(5) +" , \u221E)"; 
+        } else if (fill_const == 2) {
+          conclusionc = type + "\u2208["+ crit_value.toFixed(5) +" , \u221E)"
+        } else {
+          conclusionc = type + "\u2208(-\u221E , "+ crit_value.toFixed(5) +"]";
+        }
+        conclusionc = conclusionc + "<p>Άρα, απορρίπτουμε την H₀</p>";
+      } else {
+        conclusion = "p-τιμή > α άρα, <em>δεν</em> απορρίπτουμε την H₀";
+        if (fill_const == 3) {
+          conclusionc = type + "\u2208(-"+ Math.abs(crit_value).toFixed(5) +" , "+ Math.abs(crit_value).toFixed(5) + ")"; 
+        } else if (fill_const == 2) {
+          conclusionc = type + "\u2208(-\u221E , "+ crit_value.toFixed(5) + ")";
+        } else {
+          conclusionc = type + "\u2208("+ crit_value.toFixed(5) + " , \u221E)";
+        }
+        conclusionc = conclusionc + "<p>Άρα, <em>δεν</em> απορρίπτουμε την H₀";
+      }
+      div.innerHTML = div.innerHTML + "<p>p-τιμή = " + descrp + (pValue.toFixed(5)) + "</p>";
+      div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>"; 
+      div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusion + "</p>";
+
+      //show critical value approach
       document.getElementById("crit_value").innerHTML = "<h4><strong>Προσέγγιση με κρίσιμο σημείο</strong></h4>";
+      var xAxis_c = defineXaxis((Math.round(crit_value*100)/100), fill_const);
+      div = document.getElementById('crit_value');
+      var svg2 = create_canvas("#crit_value", xAxis_c);
+      div.innerHTML = div.innerHTML + "<p>Κρίσιμο σημείο = "+type+ "<sub>κ.σ.</sub> = " + (crit_value.toFixed(5)) + "</p>";
+      div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀ αν " + descrc1+ "</p>";
+      div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusionc + "</p>";
 
     }
     else if ($("#parameter1").val() == "proportion") {

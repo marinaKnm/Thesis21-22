@@ -1,3 +1,7 @@
+  .container {
+    width:97%;
+    margin:auto;
+  }
   /* Remove the navbar's default margin-bottom and rounded borders */
   .navbar {
     margin-bottom: 0;
@@ -67,12 +71,12 @@
   /* /////////// */
   #parent {
     display: grid;
-    grid-template-columns: 45rem 60rem;
+    grid-template-columns: 40rem 60rem;
   }
 
   #approach {
     display: grid;
-    grid-template-columns: 60rem 60rem;
+    grid-template-columns: 50rem 50rem;
   }
   /* /////////// */
   .button {
