@@ -176,7 +176,7 @@
       if (pValue <= a) {  //H0 rejected
         conclusion = "p-τιμή \u2264 α άρα, απορρίπτουμε την H₀";
         if (fill_const == 3) {
-          conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]U["+ Math.abs(crit_value).toFixed(5) +" , \u221E)"; 
+          conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]\u222A["+ Math.abs(crit_value).toFixed(5) +" , \u221E)"; 
         } else if (fill_const == 2) {
           conclusionc = type + "\u2208["+ crit_value.toFixed(5) +" , \u221E)"
         } else {
