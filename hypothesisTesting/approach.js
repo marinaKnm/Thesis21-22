@@ -69,9 +69,9 @@
     document.getElementById("muknotvalue").innerHTML = m0;
   }
 
-  //functionality for input μ or p
+  //functionality for input μ or p or σ^2
   $("#parameter1").change(function() {
-    let p = $("#parameter1").val(); 
+    let p = $("#parameter1").val();
     if (p === "proportion") {
       $("#parameter2").html("p");
       let j =  $("#muknotvalue").html();
@@ -85,6 +85,19 @@
       $("#sd1").hide();
       $("#sd2").hide();
       $("#sd3").hide();
+    } else if (p === "variance") { ///////////////////////PLUS/////////////////////
+      $("#parameter2").html("σ&#xB2;");                                          //
+      let j =  $("#muknotvalue").html();                                         //
+      if (isNaN(j)) {  //if j is NOT a number                                    //
+        $("#muknotvalue").html("σ₀&#xB2;");                                      //
+      } else if (j === "") {                                                     //
+        $("#muknotvalue").html("σ₀&#xB2;");                                      //
+      }                                                                          //
+      $("#samplestat").html("s");                                                //
+      MathJax.typesetPromise();                                                  //
+      $("#sd1").hide();                                                          //
+      $("#sd2").hide();                                                          //
+      $("#sd3").hide();////////////////////////////////////////////////////////////
     } else {
       $("#sd1").show();
       $("#sd2").show();
@@ -112,13 +125,13 @@
   //possible values for type are: z or t
   function calculate_values(type, z_t, a) {
     if (type === 'z') {
-      if (fill_const == 3) { //if fill_const=3 
+      if (fill_const == 3) { //if fill_const=3
         let q;
         if (z_t > 0) { q = (-1)*z_t }else{ q = z_t }
         pValue = jStat.normal.cdf(q, mean, std); //case: P(z <= -|z_t|)
         crit_value = jStat.normal.inv(1-a/2, 0, 1);
         pValue = 2*pValue;  //final value of p-value = 2*P(x <= -|z_t|)
-        
+
       } else { //TO P(z <= z_t)
         pValue = jStat.normal.cdf(z_t, mean, std);
         if (fill_const == 2) {
@@ -132,12 +145,12 @@
     } else {
       console.log("type z");
       console.log(fill_const);
-      if (fill_const == 3 && z_t > 0) { //if fill_const = 3  
+      if (fill_const == 3 && z_t > 0) { //if fill_const = 3
         pValue = jStat.studentt.cdf((-1)*z_t, df); // case: P(t <= -|z_t|)
         crit_value = jStat.studentt.inv(1-a/2,df);
         pValue = 2*pValue;  //final value of p-value = 2*P(x <= -|z_t|)
-      } else {  //P(t <= z_t)  
-        pValue = jStat.studentt.cdf(z_t, df); 
+      } else {  //P(t <= z_t)
+        pValue = jStat.studentt.cdf(z_t, df);
         console.log("ELSE");
         console.log(pValue);
         if (fill_const == 2) {
@@ -148,11 +161,13 @@
         }
       }
     }
-  
+
     return { crit_value, pValue };
   }
 
+
   var df; //degrees of freedom for the student distribution
+
 
   $('#hyptest').click(function() {
 
@@ -174,7 +189,7 @@
       z_t = (avg - m0)*Math.sqrt(n);
       z_t = z_t/deviation; // z or t
       z_t = (Math.round(z_t*100)/100);
-      
+
       if ($("#sigma").val() == "known") { //testing for known variance
         type="z";
 
@@ -192,11 +207,11 @@
         df = n - 1; //degrees of freedom of the studen distribution
         var s = "Βαθμοί Ελευθερίας = n - 1 = " + df;
         $('#df').append('<p>'+ s +'</p>').css("margin", "auto");
-  
+
         let obj = calculate_values(type, z_t, a);
         crit_value = obj.crit_value;
         pValue = obj.pValue;
-      }      
+      }
 
     }
     else if ($("#parameter1").val() == "proportion") {
@@ -212,7 +227,7 @@
       type = 'z';
       //calculate value
       var z_t = avg - m0;
-      z_t = z_t / Math.sqrt((m0 * (1 - m0)) / n);      
+      z_t = z_t / Math.sqrt((m0 * (1 - m0)) / n);
       z_t = (Math.round(z_t*100)/100);
 
       show_statFunction('$$z = \\frac{\\bar{p} - p_0} {\\sqrt[2]{ \\frac{p_0(1-p_0)}{n} }} = ' + z_t + '$$');
@@ -220,15 +235,31 @@
       crit_value = obj.crit_value;
       pValue = obj.pValue;
     }
-   
+    else if ($("#parameter1").val() == "variance") {
+      $("#performance").empty();
+      $('#df').empty();
+      $('#p_value').empty();
+      $('#crit_value').empty();
+
+      show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+      var s = avg;
+      var sigma0 = m0;
+      console.log("σ0=",sigma0);
+      console.log("n=",n);
+      console.log("s=",s);
+      console.log("a=",a);
+
+      return;
+    }
+
     $('#p_value').empty();
     $('#crit_value').empty();
 
       var descrp; //message for p-value approach
-      var descrc1, desrc2; //message for critical value approach      
+      var descrc1, desrc2; //message for critical value approach
       if(fill_const == 3) {
         let w;
-        if (z_t > 0) w = (-1)*z_t; else w = z_t;  
+        if (z_t > 0) w = (-1)*z_t; else w = z_t;
         descrp = "2\xD7P(X \u2264 "+ w +") = ";
         descrc1 = type + " \u2264 -|"+ type +"<sub>κ.σ.</sub>|" + " ή " + type + " \u2265 |" + type + "<sub>κ.σ.</sub>|";
       } else if (fill_const == 2) {
@@ -247,7 +278,7 @@
     if (pValue <= a) {  //H0 rejected
       conclusion = "p-τιμή \u2264 α άρα, απορρίπτουμε την H₀";
       if (fill_const == 3) {
-        conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]\u222A["+ Math.abs(crit_value).toFixed(5) +" , \u221E)"; 
+        conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]\u222A["+ Math.abs(crit_value).toFixed(5) +" , \u221E)";
       } else if (fill_const == 2) {
         conclusionc = type + "\u2208["+ crit_value.toFixed(5) +" , \u221E)"
       } else {
@@ -257,7 +288,7 @@
     } else {
       conclusion = "p-τιμή > α άρα, <em>δεν</em> απορρίπτουμε την H₀";
       if (fill_const == 3) {
-        conclusionc = type + "\u2208(-"+ Math.abs(crit_value).toFixed(5) +" , "+ Math.abs(crit_value).toFixed(5) + ")"; 
+        conclusionc = type + "\u2208(-"+ Math.abs(crit_value).toFixed(5) +" , "+ Math.abs(crit_value).toFixed(5) + ")";
       } else if (fill_const == 2) {
         conclusionc = type + "\u2208(-\u221E , "+ crit_value.toFixed(5) + ")";
       } else {
@@ -266,7 +297,7 @@
       conclusionc = conclusionc + "<p>Άρα, <em>δεν</em> απορρίπτουμε την H₀";
     }
     div.innerHTML = div.innerHTML + "<p>p-τιμή = " + descrp + (pValue.toFixed(5)) + "</p>";
-    div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>"; 
+    div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>";
     div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusion + "</p>";
 
     //show critical value approach
