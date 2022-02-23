@@ -73,6 +73,9 @@
   $("#parameter1").change(function() {
     let p = $("#parameter1").val();
     if (p === "proportion") {
+      $("#Xi").hide();
+      $("#m_checkbox").hide();
+      $("#nxs").show();
       $("#parameter2").html("p");
       let j =  $("#muknotvalue").html();
       if (isNaN(j)) {  //if j is NOT a number
@@ -85,20 +88,26 @@
       $("#sd1").hide();
       $("#sd2").hide();
       $("#sd3").hide();
-    } else if (p === "variance") { ///////////////////////PLUS/////////////////////
-      $("#parameter2").html("σ&#xB2;");                                          //
-      let j =  $("#muknotvalue").html();                                         //
-      if (isNaN(j)) {  //if j is NOT a number                                    //
-        $("#muknotvalue").html("σ₀&#xB2;");                                      //
-      } else if (j === "") {                                                     //
-        $("#muknotvalue").html("σ₀&#xB2;");                                      //
-      }                                                                          //
-      $("#samplestat").html("s");                                                //
-      MathJax.typesetPromise();                                                  //
-      $("#sd1").hide();                                                          //
-      $("#sd2").hide();                                                          //
-      $("#sd3").hide();////////////////////////////////////////////////////////////
+    } else if (p === "variance") { 
+      $("#parameter2").html("σ&#xB2;");                                          
+      let j =  $("#muknotvalue").html();                                         
+      if (isNaN(j)) {  //if j is NOT a number                                    
+        $("#muknotvalue").html("σ₀&#xB2;");                                      
+      } else if (j === "") {                                                     
+        $("#muknotvalue").html("σ₀&#xB2;");                                      
+      }                                                                          
+      $("#samplestat").html("s");                                                
+      MathJax.typesetPromise();   
+      $("#nxs").hide();                                               
+      $("#sd1").hide();                                                          
+      $("#sd2").hide();                                                         
+      $("#sd3").hide();
+      $("#Xi").show();
+      $("#m_checkbox").show();
     } else {
+      $("#Xi").hide();
+      $("#m_checkbox").hide();
+      $("#nxs").show();  
       $("#sd1").show();
       $("#sd2").show();
       $("#sd3").show();
@@ -113,6 +122,17 @@
       MathJax.typesetPromise();
     }
   });
+
+  //chi square distribution checkbox
+  $('input:checkbox').change(
+    function(){
+      if ($(this).is(':checked')) {
+            $("#value_of_mean").html("<input type=\"text\" style=\"width:50px;\" id=\"value_avg\" class=\"hypinput2\">");
+      }
+      else {
+        $("#value_of_mean").html("");
+      }
+    });
 
   //show the type for calculating z-value or t-value
   function show_statFunction(str) {
@@ -242,12 +262,24 @@
       $('#crit_value').empty();
 
       show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
-      var s = avg;
-      var sigma0 = m0;
+      var s = avg;  ///////????
+      var sigma0 = m0;  
       console.log("σ0=",sigma0);
       console.log("n=",n);
       console.log("s=",s);
       console.log("a=",a);
+
+      //get values of independent variables 
+      var variables = $("#independent_var").val();
+      variables = variables.split(/[ ]+/);  //splits string of values on white space
+      n = variables.length;   //sample size
+      console.log(variables); //////////
+      console.log(variables.length);///////
+
+      if ($("#known_avg").is(':checked')) {
+        avg = $('#value_avg').val();
+        console.log(avg);
+      }
 
       return;
     }
@@ -286,7 +318,7 @@
       }
       conclusionc = conclusionc + "<p>Άρα, απορρίπτουμε την H₀</p>";
     } else {
-      conclusion = "p-τιμή > α άρα, <em>δεν</em> απορρίπτουμε την H₀";
+      conclusion = "p-τιμή > α άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀";
       if (fill_const == 3) {
         conclusionc = type + "\u2208(-"+ Math.abs(crit_value).toFixed(5) +" , "+ Math.abs(crit_value).toFixed(5) + ")";
       } else if (fill_const == 2) {
@@ -294,7 +326,7 @@
       } else {
         conclusionc = type + "\u2208("+ crit_value.toFixed(5) + " , \u221E)";
       }
-      conclusionc = conclusionc + "<p>Άρα, <em>δεν</em> απορρίπτουμε την H₀";
+      conclusionc = conclusionc + "<p>Άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀";
     }
     div.innerHTML = div.innerHTML + "<p>p-τιμή = " + descrp + (pValue.toFixed(5)) + "</p>";
     div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>";
