@@ -11,26 +11,42 @@
       height = 200 - margin.top - margin.bottom;
 
   //create standard normal data points
-  var standard_Dataset = create_data(interval, upper_bound, lower_bound, mean, std);
+  var standard_Dataset = create_data(interval, upper_bound, lower_bound, mean, std, 1);
+  //create standard normal data points
+  var standard_Dataset_chi = create_data(interval, 18, 0, mean, std, 2);
 
-  ////// Define Scales /////////////
-  var xScale = d3.scaleLinear()
-      .domain([d3.min(standard_Dataset, function(d) {
-          return d.x;
-      }), d3.max(standard_Dataset, function(d) {
-          return d.x;
-      })])
-      .range([0,width]);
-  var yScale = d3.scaleLinear()
-      .domain([
-          d3.min(standard_Dataset, function(d) {
-              return (d.y);
-          }),
-          d3.max(standard_Dataset, function(d) {
-              return d.y;
-          })
-      ])
-      .range([height,0]);
+  var object = defineScales(standard_Dataset);
+
+  var xScale = object.xScale;
+  var yScale = object.yScale;
+
+  object = defineScales(standard_Dataset_chi);
+
+  var xScale_chi = object.xScale;
+  var yScale_chi = object.yScale;
+
+  function defineScales(dataset) {
+
+    var xScale = d3.scaleLinear()
+        .domain([d3.min(dataset, function(d) {
+            return d.x;
+        }), d3.max(dataset, function(d) {
+            return d.x;
+        })])
+        .range([0,width]);
+    var yScale = d3.scaleLinear()
+        .domain([
+            d3.min(dataset, function(d) {
+                return (d.y);
+            }),
+            d3.max(dataset, function(d) {
+                return d.y;
+            })
+        ])
+        .range([height,0]);
+
+    return {xScale,yScale};
+  }
 
 
   ////// Define Axis   /////////////
@@ -88,26 +104,26 @@
       $("#sd1").hide();
       $("#sd2").hide();
       $("#sd3").hide();
-    } else if (p === "variance") { 
-      $("#parameter2").html("σ&#xB2;");                                          
-      let j =  $("#muknotvalue").html();                                         
-      if (isNaN(j)) {  //if j is NOT a number                                    
-        $("#muknotvalue").html("σ₀&#xB2;");                                      
-      } else if (j === "") {                                                     
-        $("#muknotvalue").html("σ₀&#xB2;");                                      
-      }                                                                          
-      $("#samplestat").html("s");                                                
-      MathJax.typesetPromise();   
-      $("#nxs").hide();                                               
-      $("#sd1").hide();                                                          
-      $("#sd2").hide();                                                         
+    } else if (p === "variance") {
+      $("#parameter2").html("σ&#xB2;");
+      let j =  $("#muknotvalue").html();
+      if (isNaN(j)) {  //if j is NOT a number
+        $("#muknotvalue").html("σ₀&#xB2;");
+      } else if (j === "") {
+        $("#muknotvalue").html("σ₀&#xB2;");
+      }
+      $("#samplestat").html("s");
+      MathJax.typesetPromise();
+      $("#nxs").hide();
+      $("#sd1").hide();
+      $("#sd2").hide();
       $("#sd3").hide();
       $("#Xi").show();
       $("#m_checkbox").show();
     } else {
       $("#Xi").hide();
       $("#m_checkbox").hide();
-      $("#nxs").show();  
+      $("#nxs").show();
       $("#sd1").show();
       $("#sd2").show();
       $("#sd3").show();
@@ -263,9 +279,9 @@
 
       // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
       var s = 0;
-      var sigma0 = m0; 
+      var sigma0 = m0;
 
-      //get values of independent variables 
+      //get values of independent variables
       var variables = $("#independent_var").val();
       variables = variables.split(/[ ]+/);  //splits string of values on white space
       n = variables.length;   //sample size
@@ -273,16 +289,15 @@
 
       if ($("#known_avg").is(':checked')) { //if μ is checked then mean of sample is given as input
         avg = $('#value_avg').val();
-        console.log(avg);
 
-        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
         for (let i=0; i<n; i++) {
           s = s + Math.pow((variables[i] - avg), 2);
-          console.log(s);
         }
         s = s / Math.pow(sigma0,2);
-        console.log(s);
-        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{{(χ_i-μ)}^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
+        var strdf = "Βαθμοί Ελευθερίας = n = " + n;
+        $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
+
       } else {  //else we calculate the mean of sample
         avg = 0;
         for (let i=0; i<n; i++) {
@@ -290,15 +305,25 @@
         }
         avg = avg / n;
         console.log(avg);
-        
+
         for (let i=0; i<n; i++) {
           s = s + Math.pow((variables[i] - avg), 2);
-          
+
         }
         s = s / Math.pow(sigma0,2);
         console.log(s);
         // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{(χ_i-\\bar{χ})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
+        var strdf = n-1;
+        strdf = "Βαθμοί Ελευθερίας = n-1 = " + strdf;
+        $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
       }
+
+      ////
+      var xAxis_cr = defineXaxis(s, fill_const, xScale_chi, 2);
+      var div = document.getElementById('p_value');
+      div.innerHTML += "<h4><strong>Προσέγγιση με κρίσιμο σημείο</strong></h4>";
+      var svg1 = create_canvas("#p_value", xAxis_cr, xScale_chi, yScale_chi, 2);
 
       return;
     }
@@ -322,10 +347,10 @@
       }
 
     //show p-value approach
-    var xAxis_p = defineXaxis(z_t, fill_const);
+    var xAxis_p = defineXaxis(z_t, fill_const, xScale, 1);
     var div = document.getElementById('p_value');
     div.innerHTML += "<h4><strong>Προσέγγιση με p-τιμή</strong></h4>";
-    var svg1 = create_canvas("#p_value", xAxis_p);
+    var svg1 = create_canvas("#p_value", xAxis_p, xScale, yScale, 1);
     if (pValue <= a) {  //H0 rejected
       conclusion = "p-τιμή \u2264 α άρα, απορρίπτουμε την H₀";
       if (fill_const == 3) {
@@ -353,9 +378,9 @@
 
     //show critical value approach
     document.getElementById("crit_value").innerHTML = "<h4><strong>Προσέγγιση με κρίσιμο σημείο</strong></h4>";
-    var xAxis_c = defineXaxis((Math.round(crit_value*100)/100), fill_const);
+    var xAxis_c = defineXaxis((Math.round(crit_value*100)/100), fill_const, xScale, 1);
     div = document.getElementById('crit_value');
-    var svg2 = create_canvas("#crit_value", xAxis_c);
+    var svg2 = create_canvas("#crit_value", xAxis_c, xScale, yScale, 1);
     if (fill_const == 3) {
       div.innerHTML = div.innerHTML + "<p>Κρίσιμα σημεία: -"+type+ "<sub>κ.σ.</sub> = " + ((-1)*Math.abs(crit_value)).toFixed(5) + "</p>";
       div.innerHTML = div.innerHTML + "<p>και " +type+ "<sub>κ.σ.</sub> = " + (Math.abs(crit_value)).toFixed(5) + "</p>";
@@ -369,9 +394,17 @@
 
 ////////////////////////////////////////////////////
 
-    function create_canvas(id, xAxis) {
+    function create_canvas(id, xAxis, xScale, yScale, distr) {
 
-        var dataset2 = fill(interval, upper_bound, lower_bound, mean, std, fill_const);
+        var dataset;
+        var dataset2;
+        if (distr == 1) {
+          dataset = standard_Dataset;
+          dataset2 = fill(interval, upper_bound, lower_bound, mean, std, fill_const, distr);
+        }  else if (distr == 2) {
+          dataset = standard_Dataset_chi;
+          dataset2 = fill(interval, 18, 0, mean, std, fill_const, distr);
+        }
 
         var svg = d3.select(id).append("svg")
                   .attr("width", width + margin.left + margin.right)
@@ -402,7 +435,7 @@
         svg.append("g")
             .attr("id", "circles")
             .selectAll("circle")
-            .data(standard_Dataset)
+            .data(dataset)
             .enter()
             .append("circle")
             .attr("class", "dot")
@@ -426,27 +459,36 @@
 
 ////////////////////////////////////////////////
     //functionality for the graphs
-    function create_data(interval, upper_bound, lower_bound, mean, std) {
+    function create_data(interval, upper_bound, lower_bound, mean, std, distr) {
         var n = Math.ceil((upper_bound - lower_bound) / interval)
         var data = [];
 
         x_position = lower_bound;
         for (i = 0; i < n; i++) {
+          if (distr == 1) {
             data.push({
                 "y": jStat.normal.pdf(x_position, mean, std),
                 "x": x_position
             })
+          }
+          if (distr == 2) {
+            data.push({
+                "y": jStat.chisquare.pdf(x_position, 6),
+                "x": x_position
+            })
+          }
             x_position += interval
         }
         return (data);
     }
 
-    function fill(interval, upper_bound, lower_bound, mean, std, fill) {
+    function fill(interval, upper_bound, lower_bound, mean, std, fill, distr) {
         var n = Math.ceil((upper_bound - lower_bound) / interval)
         var data = [];
 
         x_position = lower_bound;
         for (i = 0; i < n; i++) {
+          if (distr == 1) {
             if ((fill == 1 && x_position <= -1.5)||(fill == 2 && x_position >= 1.5)||(fill == 3 && (x_position >= 1.5||x_position <= -1.5))) {
               data.push({
                   "y": jStat.normal.pdf(x_position, mean, std),
@@ -458,39 +500,75 @@
                   "x": x_position
               })
             }
+          }
+          else if (distr == 2) {
+            if ((fill == 1 && x_position <= 2)||(fill == 2 && x_position >= 10.5)||(fill == 3 && (x_position >= 10.5||x_position <= 2))) {
+              data.push({
+                  "y": jStat.chisquare.pdf(x_position, 6),//mean, std),
+                  "x": x_position
+              })
+            } else {
+              data.push({
+                  "y": 0,
+                  "x": x_position
+              })
+            }
+          }
+
             x_position += interval
         }
         return (data);
     }
 
-    function defineXaxis(point, fill_const) {
+    function defineXaxis(point, fill_const, xScale, distr) {
 
         var values; // real values for x axis: [-1.5,0] or [0,1.5] or [-1.5,0,1.5]
+        var xAxis;
+        if (distr == 1) {
+          if (fill_const == 1) {
+            values = [-1.5,0];
+          } else if (fill_const == 2) {
+            values = [0,1.5];
+          } else if (fill_const == 3) {
+            values = [-1.5,0,1.5];
+            point = Math.abs(point);
+          }
 
-        if (fill_const == 1) {
-          values = [-1.5,0];
-        } else if (fill_const == 2) {
-          values = [0,1.5];
-        } else if (fill_const == 3) {
-          values = [-1.5,0,1.5];
-          point = Math.abs(point);
+          xAxis = d3.axisBottom()
+              .scale(xScale)
+              .tickSize(9)
+              .tickValues(values)
+              .tickFormat(function(d) {
+                if (d<0) {
+                  if (fill_const == 3) {
+                    return ((-1)*point).toString();
+                  }
+                  return point.toString();
+                } else if (d>0) {
+                   return point.toString();
+                } else {
+                  return '0';
+                }});
+        } else if (distr == 2) {
+            if (fill_const == 1) {
+              values = [0,2];
+            } else if (fill_const == 2) {
+              values = [0,10.5];
+            } else if (fill_const == 3) {
+              values = [0,2,10.5];
+              // z_t = Math.abs(z_t);
+            }
+
+            var xAxis = d3.axisBottom()
+                .scale(xScale)
+                .tickValues(values)
+                .tickFormat(function(d) {
+                  if (d>0) {
+                     return point.toString();
+                  } else {
+                    return '0';
+                  }});
         }
-
-        var xAxis = d3.axisBottom()
-            .scale(xScale)
-            .tickSize(9)
-            .tickValues(values)
-            .tickFormat(function(d) {
-              if (d<0) {
-                if (fill_const == 3) {
-                  return ((-1)*point).toString();
-                }
-                return point.toString();
-              } else if (d>0) {
-                 return point.toString();
-              } else {
-                return '0';
-              }});
 
         return xAxis;
 
