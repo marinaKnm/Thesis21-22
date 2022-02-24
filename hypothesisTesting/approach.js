@@ -261,24 +261,43 @@
       $('#p_value').empty();
       $('#crit_value').empty();
 
-      show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
-      var s = avg;  ///////????
-      var sigma0 = m0;  
-      console.log("σ0=",sigma0);
-      console.log("n=",n);
-      console.log("s=",s);
-      console.log("a=",a);
+      // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+      var s = 0;
+      var sigma0 = m0; 
 
       //get values of independent variables 
       var variables = $("#independent_var").val();
       variables = variables.split(/[ ]+/);  //splits string of values on white space
       n = variables.length;   //sample size
-      console.log(variables); //////////
-      console.log(variables.length);///////
+      variables = variables.map(Number);  //convert every string of number to number
 
-      if ($("#known_avg").is(':checked')) {
+      if ($("#known_avg").is(':checked')) { //if μ is checked then mean of sample is given as input
         avg = $('#value_avg').val();
         console.log(avg);
+
+        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+        for (let i=0; i<n; i++) {
+          s = s + Math.pow((variables[i] - avg), 2);
+          console.log(s);
+        }
+        s = s / Math.pow(sigma0,2);
+        console.log(s);
+        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+      } else {  //else we calculate the mean of sample
+        avg = 0;
+        for (let i=0; i<n; i++) {
+          avg = avg + variables[i];
+        }
+        avg = avg / n;
+        console.log(avg);
+        
+        for (let i=0; i<n; i++) {
+          s = s + Math.pow((variables[i] - avg), 2);
+          
+        }
+        s = s / Math.pow(sigma0,2);
+        console.log(s);
+        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
       }
 
       return;
