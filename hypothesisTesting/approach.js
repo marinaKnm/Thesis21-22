@@ -277,7 +277,6 @@
       $('#p_value').empty();
       $('#crit_value').empty();
 
-      // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
       var s = 0;
       var sigma0 = m0;
 
@@ -288,43 +287,104 @@
       variables = variables.map(Number);  //convert every string of number to number
 
       if ($("#known_avg").is(':checked')) { //if μ is checked then mean of sample is given as input
+        type="n";
         avg = $('#value_avg').val();
+        if (avg === "") { //if μ is not given show message
+          $("#performance").html("Δώστε μέσο δείγματος μ.");
+          return;
+        }
 
-        for (let i=0; i<n; i++) {
+        for (let i=0; i<n; i++) { //calculate test statistic
           s = s + Math.pow((variables[i] - avg), 2);
         }
         s = s / Math.pow(sigma0,2);
+
+        //show test statistic and its value on page
         show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{{(χ_i-μ)}^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
-        var strdf = "Βαθμοί Ελευθερίας = n = " + n;
+        df = n;
+        var strdf = "Βαθμοί Ελευθερίας = n = " + df;
         $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
 
       } else {  //else we calculate the mean of sample
+        type = "n-1";
         avg = 0;
         for (let i=0; i<n; i++) {
           avg = avg + variables[i];
         }
         avg = avg / n;
-        console.log(avg);
 
-        for (let i=0; i<n; i++) {
+        for (let i=0; i<n; i++) { //calculate test statistic
           s = s + Math.pow((variables[i] - avg), 2);
-
         }
         s = s / Math.pow(sigma0,2);
-        console.log(s);
-        // show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{(n-1)s&#xB2;} {σ₀&#xB2;} = ' + '$$');
+        
+        //show test statistic and its value on page;
         show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{(χ_i-\\bar{χ})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
-        var strdf = n-1;
-        strdf = "Βαθμοί Ελευθερίας = n-1 = " + strdf;
+        df = n-1;
+        strdf = "Βαθμοί Ελευθερίας = n-1 = " + df;
         $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
       }
 
-      ////
-      var xAxis_cr = defineXaxis(s, fill_const, xScale_chi, 2);
+      //calculate critical value(s)
+      var crit_value_chi = [];
+      if (fill_const == 1) {
+        crit_value_chi.push(jStat.chisquare.inv(a, df));
+      } else if (fill_const == 2) {
+        crit_value_chi.push(jStat.chisquare.inv(1-a, df));
+      } else {
+        crit_value_chi.push(jStat.chisquare.inv(a/2, df));
+        crit_value_chi.push(jStat.chisquare.inv(1-a/2, df));
+      }
+
+      // show graphic representation for chi-square
+      var xAxis_cr = defineXaxis(crit_value_chi, fill_const, xScale_chi, 2);
       var div = document.getElementById('p_value');
       div.innerHTML += "<h4><strong>Προσέγγιση με κρίσιμο σημείο</strong></h4>";
-      var svg1 = create_canvas("#p_value", xAxis_cr, xScale_chi, yScale_chi, 2);
+      var svg = create_canvas("#p_value", xAxis_cr, xScale_chi, yScale_chi, 2);
 
+      //conclude whether to reject or not the null hypothesis
+      let flag=0;
+      if(fill_const == 3) { 
+        descrc1 = "$$χ^2_{("+ type +")} \u2208 (0 , "+ crit_value_chi[0].toFixed(5) + "]\u222A[" + crit_value_chi[1].toFixed(5) + " , \u221E)$$";
+        if (s<= crit_value_chi[0] || s>=crit_value_chi[1]) {  //reject null hypothesis
+          conclusion = "$$χ^2_{("+ type +")} \u2208 (0, " + crit_value_chi[0].toFixed(5) +"]\u222A["+ crit_value_chi[1].toFixed(5) +" , \u221E)$$";
+          flag = 1;
+        } else {  
+          conclusion = "$$χ^2_{("+ type +")} \u2208 (" + crit_value_chi[0].toFixed(5) + " , " + crit_value_chi[1].toFixed(5) + ")" + "$$";
+        }
+      } else if(fill_const == 2) { 
+        descrc1 = "$$χ^2_{("+ type +")}\u2265 χ_{κρίσιμο σημείο}^2="+ crit_value_chi[0].toFixed(5) +"$$";
+        if (s >= crit_value_chi[0]) { //reject null hypothesis
+          conclusion = "$$χ^2_{("+ type +")} \u2208 [" + crit_value_chi[0].toFixed(5) + ", \u221E)$$";
+          flag = 1;
+        } else {
+          conclusion = "$$χ^2_{("+ type +")} \u2208 (0 , "+ crit_value_chi[0].toFixed(5) +")$$";
+        }
+      } else {
+        descrc1 = "$$χ^2_{("+ type +")}\u2264 χ_{κρίσιμο σημείο}^2="+ crit_value_chi[0].toFixed(5) +"$$";
+        if (s <= crit_value_chi[0]) { //reject null hypothesis
+          conclusion =  "$$χ^2_{("+ type +")}	\u2208 (0 , "+ crit_value_chi[0].toFixed(5) +" ]$$";
+          flag = 1;
+        } else {
+          conclusion = "$$χ^2_{("+ type +")}	\u2208 ("+ crit_value_chi[0].toFixed(5) +" , \u221E)$$";
+        }
+      }
+      if (flag == 1) {
+        conclusion = "<p>Άρα, απορρίπτουμε την H₀</p>";
+      } else {
+        conclusion = "<p>Άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀</p>";
+      }
+
+      div = document.getElementById('crit_value');
+      if (fill_const == 3) {
+        div.innerHTML = div.innerHTML + "<p>Κρίσιμα σημεία: " + crit_value_chi[0].toFixed(5) + "</p>";
+        div.innerHTML = div.innerHTML + "<p>και " + crit_value_chi[1].toFixed(5) + "</p>";
+      } else {
+        div.innerHTML = div.innerHTML + "<p>Κρίσιμο σημείο:" + crit_value_chi[0].toFixed(5) + "</p>";
+      }
+      div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀ αν " + descrc1 + "</p>";
+      div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusion + "</p>";
+      MathJax.typesetPromise();
       return;
     }
 
@@ -556,7 +616,6 @@
               values = [0,10.5];
             } else if (fill_const == 3) {
               values = [0,2,10.5];
-              // z_t = Math.abs(z_t);
             }
 
             var xAxis = d3.axisBottom()
@@ -564,7 +623,14 @@
                 .tickValues(values)
                 .tickFormat(function(d) {
                   if (d>0) {
-                     return point.toString();
+                     if (fill_const == 3) { //in this case there are 2 critical points
+                       if (d == 2) {
+                         return point[0].toFixed(3);
+                       } else { //d==10.5
+                         return point[1].toFixed(3);
+                       }
+                     }
+                     return point[0].toFixed(3);
                   } else {
                     return '0';
                   }});
