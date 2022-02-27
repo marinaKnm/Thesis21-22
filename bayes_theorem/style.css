@@ -84,5 +84,5 @@ cursor: pointer;
 
 
 text {
-    white-space: pre-wrap;  /* new line inside a text element */
+    /* white-space: pre-line;  new line inside a text element */
 }

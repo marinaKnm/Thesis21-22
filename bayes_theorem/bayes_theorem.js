@@ -15,8 +15,9 @@ $(document).ready(function () {
         $('#demo_nd').html(0.05);
         $('#demo_ph').html(0.15);
         $('#demo_nh').html(0.85);
-        update_ProbabilityOfTestResult()
         update_BayesRule();
+        update_ProbabilityOfTestResult();
+        MathJax.typesetPromise();
     });
 
     var Canvas = {
@@ -107,7 +108,7 @@ $(document).ready(function () {
     var tree_canvas = d3.select("#graph")
             .append("svg")
             .attr("width", container_width)
-            .attr("height", 540);
+            .attr("height", 550);
 
     var positionOfInterNodes = container_width/2;
 
@@ -131,8 +132,8 @@ $(document).ready(function () {
 			{source: "D", target: "neg_dis", tag: "P(\u2212|D)=", id: "p_negd"},
 			{source: "H", target: "pos_hea", tag: "P(+|H)=", id: "p_posh"},
 			{source: "H", target: "neg_hea", tag: "P(\u2212|H)=", id: "p_negh"},
-			{source: "right_root", target: "+", tag: "P(+)=P(D\u2229+)+P(H\u2229+)\n=", id: "p_pos", position: 2},
-			{source: "right_root", target: "-", tag: "P(\u2212)=P(D\u2229\u2212)+P(H\u2229\u2212)\n=", id: "p_neg", position: 2},
+			{source: "right_root", target: "+", tag: "P(+)=P(D\u2229+)+P(H\u2229+)=", id: "p_pos", position: 2},
+			{source: "right_root", target: "-", tag: "P(\u2212)=P(D\u2229\u2212)+P(H\u2229\u2212)=", id: "p_neg", position: 2},
 			{source: "+", target: "pos_dis", tag: "P(D|+)=P(D\u2229+)/P(+)=", id: "p_dpos", position: 1, colour: "#a8e809"},
 			{source: "+", target: "pos_hea", tag: "P(H|+) =P(H\u2229+)/P(+)= ", id: "p_hpos", position: 1, colour: "#a8e809"},
 			{source: "-", target: "neg_dis", tag: "P(D|\u2212)=P(D\u2229\u2212)/P(\u2212)=", id: "p_dneg", position: 1, colour: "#15edb0"},
@@ -154,8 +155,6 @@ $(document).ready(function () {
         .force("center", d3.forceCenter(Canvas.width/2, Canvas.height/2));
 
     function ticked(tree) {
-        tree.node_texts.attr('x', d => d.x)
-            .attr('y', d => d.y);
 
         tree.link.attr("x1", function(d) {
                 return d.source.x;
@@ -178,7 +177,8 @@ $(document).ready(function () {
             })
 
     }
-
+    
+    
     function create_tree(graph) {
         var link = tree_canvas.append("g")
             .selectAll("line")
@@ -202,14 +202,47 @@ $(document).ready(function () {
             .attr("fill", "orange")
             .attr("stroke", "yellow");
 
-        var node_texts = tree_canvas.append('g')
+        var node_texts = tree_canvas
             .selectAll('text')
             .data(graph.nodes)
             .enter()
-            .append('text')            
-            .text(d => d.tag)
+            .append('text')
+            .attr('x', function(d) {
+                if(d.size === "17px") {
+                    return d.fx-20;
+                } else {
+                    return d.fx;
+                }
+            })
+            .attr('y', function(d) {
+                if(d.size === "17px") {
+                    return d.fy+20;
+                } else {
+                    return d.fy;
+                }
+            })
             .style("font-size", d => d.size)
-            .style("font-weight", "bolder");
+            .style("font-weight", "bolder")
+            .attr("id", d=>d.name); 
+    
+            
+        var node_tspans = node_texts
+            .each(function(d) {
+                // console.log(d);
+                if(d.tag != undefined) {
+                    var arr = d.tag.split("\n");
+                    for(let i=0; i<arr.length; i++) {
+                        let a = d3.select(this)
+                            .append('tspan')
+                            .text(arr[i])
+                            .attr('x', d.fx-20)
+                            .attr('dy', i ? "1.2em" : 0)
+                            .attr("id", function(d) {
+                                return d.name + i;  
+                            });
+                    }
+                }
+            });
 
         var link_text = tree_canvas.append('g')
             .selectAll('text')
@@ -222,7 +255,9 @@ $(document).ready(function () {
                 if (d.position === 1) {
                     return d.source.x - 110;
                 } else if (d.position === 2) {
-                    return (d.target.x + d.source.x) / 2;
+                    return ((d.target.x + d.source.x) / 2 - 50);
+                } else if (d.id ==="d" || d.id ==="h") {
+                    return ((d.target.x + d.source.x) / 2 - 15);
                 } else {
                     return d.source.x;
                 }
@@ -232,11 +267,12 @@ $(document).ready(function () {
                     return 192.5;
                 } else if (d.id === "p_dneg") {
                     return 317.5;
-                }
+                } 
+                
                 return d.target.y
             });
 
-        return { link, node, node_texts, link_text };
+        return { link, node, node_texts, node_tspans, link_text };
     }
 
 
@@ -261,7 +297,6 @@ $(document).ready(function () {
             } else if (d.id === 'p_negh') {
                 res = probabilities.nh.toFixed(2);
             } else if (d.id === "p_pos") {
-                console.log(probabilities.ppos);
                 res = Number((probabilities.ppos)).toFixed(2);
             } else if (d.id === "p_neg") {
                 res = (1 - probabilities.ppos).toFixed(2);
@@ -281,24 +316,28 @@ $(document).ready(function () {
     
 
     //write the possibility for each intersection node on the tree
-    function Calculate_IntersectionNodes(tree) {
-        tree.node_texts.text(function(d) {
-            if (d.name === "pos_dis") {
-                return d.tag + (probabilities.d * probabilities.pd).toFixed(2);
-            } else if (d.name === "neg_dis") {
-                return d.tag + (probabilities.d * (1-probabilities.pd)).toFixed(2);
-            } else if (d.name === "pos_hea") {
-                return d.tag + ((1-probabilities.d) * (1-probabilities.nh)).toFixed(2);
-            } else if (d.name === "neg_hea") {
-                return d.tag + ((1-probabilities.d) * probabilities.nh).toFixed(2);
-            } else {
-                return d.tag;
-            }
-        });
+    function Calculate_IntersectionNodes() {
+        //get every tspan with the final value and update it on the new value
+        d3.select("#pos_dis3")
+            .text(function() {
+                return "=" + (probabilities.d * probabilities.pd).toFixed(2);
+            });
+        d3.select("#neg_dis3")
+            .text(function() {
+                return "=" + (probabilities.d * (1-probabilities.pd)).toFixed(2);
+            });
+        d3.select("#pos_hea3")
+            .text(function() {
+                return "=" + ((1-probabilities.d) * (1-probabilities.nh)).toFixed(2);
+            });
+        d3.select("#neg_hea3")
+            .text(function() {
+                return "=" + ((1-probabilities.d) * probabilities.nh).toFixed(2);
+            });
     }
 
     updateProbabilities();
-    Calculate_IntersectionNodes(graph1);
+    Calculate_IntersectionNodes();
 
     /* function to update the value of a range slider */
     var slider, output, value;
@@ -365,9 +404,8 @@ $(document).ready(function () {
     function update_BayesRule() {
         let result = calculate_Bayes('D', '+');
         result.toString();
-        result = '$$P(D|+) = \\frac{P(D)P(+|D)}{P(+)} = \\frac{P(D)P(+|D)}{P(D)P(+|D) + P(H)P(+|H)} = ' + result + '$$';
+        result = '$$P(D|+) = \\frac{P(D)P(+|D)}{P(+)} = \\frac{P(D)P(+|D)}{P(D)P(+|D) + P(H)P(+|H)} = {\\color{red}' + result + '}$$';
         $("#bayes_rule").html(result);
-        MathJax.typesetPromise();
     }
 
 
@@ -379,9 +417,8 @@ $(document).ready(function () {
         let num2 = 1 - probabilities.ppos;
         num2 = (Math.round(num2 * 100) / 100).toFixed(2);
         num2.toString();
-        str = '$$P(+) = P(+|D)P(D) + P(+|H)P(H) = ' + num1 +',$$ $$P(-) = P(-|D)P(D) + P(-|H)P(H) = '+ num2 +'$$';
+        str = '$$P(+) = P(+|D)P(D) + P(+|H)P(H) = {\\color{red}' + num1 +'},$$ $$P(-) = P(-|D)P(D) + P(-|H)P(H) = {\\color{red}'+ num2 +'}$$';
         $("#partition").html(str);
-        MathJax.typesetPromise();
     }
 
 
@@ -390,9 +427,10 @@ $(document).ready(function () {
         //update the value of bayes rule
         update_BayesRule();
         update_ProbabilityOfTestResult();
+        MathJax.typesetPromise();
         //update the values on the trees
         updateProbabilities();
-        Calculate_IntersectionNodes(graph1);
+        Calculate_IntersectionNodes();
         //reset the simulation
         reset_svg();
     }
@@ -412,7 +450,9 @@ $(document).ready(function () {
         rect3.attr('width', width);
         rect4.attr('width', width);
         rect2.attr('x', rec2.x).attr('width', rec2.width);
-
+    });
+    
+    $("#disease").change(function() {
         update_values();
     });
 
@@ -432,7 +472,9 @@ $(document).ready(function () {
         rect4.attr('width', width);
         rect2.attr('x', rec2.x).attr('width', rec2.width);
         bottom_text.attr('x', rec4.x + rec4.width - 40);
+    });
 
+    $("#healthy").change(function() {
         update_values();
     });
 
@@ -448,7 +490,9 @@ $(document).ready(function () {
         left_text.attr('y', rec4.y + 20);
 
         rect4.attr('y', rec4.y).attr('height', rec4.height);
+    });
 
+    $("#positive_d").change(function() {
         update_values();
     });
 
@@ -464,7 +508,9 @@ $(document).ready(function () {
         left_text.attr('y', rec4.y + 20);
 
         rect4.attr('y', rec4.y).attr('height', rec4.height);
-
+    });
+    
+    $("#negative_d").change(function() {
         update_values();
     });
 
@@ -480,7 +526,9 @@ $(document).ready(function () {
         right_text.attr('y', rec2.y + 20);
 
         rect2.attr('y', rec2.y).attr('height', rec2.height);
+    });
 
+    $("#positive_h").change(function() {
         update_values();
     });
 
@@ -496,7 +544,9 @@ $(document).ready(function () {
         right_text.attr('y', rec2.y + 20);
 
         rect2.attr('y', rec2.y).attr('height', rec2.height);
+    });
 
+    $("#negative_h").change(function() {
         update_values();
     });
 
@@ -602,6 +652,11 @@ $(document).ready(function () {
 
         people = $('#quantity').val();  //get number of dots
         type = $('#dots').val();        //get what each dot represents
+
+        if(people < 10 || people > 1000) {
+            alert("Ο δοσμένος αριθμός πρέπει να είναι μεταξύ 10 και 1000.");
+            return;
+        }
 
         /////////////////////////// DATA ////////////////////////////
         //for those testing positive
@@ -725,22 +780,28 @@ $(document).ready(function () {
             people = 1000000;
         }
 
-        str1 = (people * probabilities.ppos * quantity).toFixed(0) + " άτομα βγήκαν θετικά\n" +
-        "αλλά " + (people * probabilities.d * probabilities.pd * quantity).toFixed(0) +" έχουν πραγματικά\nτην ασθένεια.";
-        str2 = (people * (1-probabilities.ppos) * quantity).toFixed(0) + " άτομα βγήκαν αρνητικά\nστην ασθένεια,\n αλλά τα "+ 
+        str1 = (people * probabilities.ppos * quantity).toFixed(0) + " άτομα βγήκαν θετικά\n"
+        + "αλλά " + (people * probabilities.d * probabilities.pd * quantity).toFixed(0) +" έχουν πραγματικά\n"
+        + "την ασθένεια.";
+    
+        str2 = (people * (1-probabilities.ppos) * quantity).toFixed(0) + " άτομα βγήκαν αρνητικά\nστην ασθένεια,\nαλλά τα "+ 
         (people * (1-probabilities.d) * probabilities.nh * quantity).toFixed(0) +" είναι πραγματικά υγιή.";
 
-        //show message on the page
-        svg.append("text")
+        //show message, append a text element to the svg
+        var text = svg.append("text")
             .attr("class", "message")
             .attr('x', crcl2.center_x + crcl2.radius + 4)
-            .attr('y', 40)
-            .html(str1);
-        svg.append("text")
-            .attr("class", "message")
-            .attr('x', crcl2.center_x + crcl2.radius + 4)
-            .attr('y', 130)
-            .html(str2);
+            .attr('y', 40);
+
+        //append a tspan element to text for every data
+        text.selectAll("tspan")
+            .data((str1 + " \n " + str2).split("\n"))    //list of strings
+            .enter()
+            .append("tspan")
+            .text(d => d)
+            .attr("x", crcl2.center_x + crcl2.radius + 4)
+            .attr("dy", 22);
+            
     }
     
 });
