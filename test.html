@@ -7,8 +7,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+  <!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
 
-  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <!-- <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
 
   <style>
     /* Remove the navbar's default margin-bottom and rounded borders */
@@ -258,6 +260,9 @@
 
       if ($("#sigma").val() == "known") { //testing for known variance
         console.log(testStat);
+        // var result = '$$z = \\frac{\\bar{x} - μ}{σ} = ' + testStat + '$$';
+        // $("#bayes_rule").html(result);
+        // MathJax.typesetPromise();
 
       } else { //testing for unknown variance
         console.log("s ",testStat);
