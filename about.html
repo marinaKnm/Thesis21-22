@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      background-color: #D3D3D3;
+      display: block;
+      margin-top: 0;
+    }
+
+    .breadcrumb {
+      background-color: #DCDCDC;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="index.html">Αρχική</a></li>
+        <li><a href="about.html">Ποιοί είμαστε</a></li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Πιθανότητες <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="venn.html">Διάγραμμα Venn</a></li>
+            <li><a href="bayes_theorem/bayes.html">Θεώρημα Bayes</a></li>
+            <li><a href="distributions/distributions.html">Κατανομές</a></li>
+          </ul>
+        </li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Στατιστική <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="hypothesisTesting/hypothesisTesting.html">Έλεγχοι Υποθέσεων</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+  </nav>
+
+  <br>
+  <br>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Αρχική</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Ποιοί Είμαστε</li>
+    </ol>
+  </nav>
+
+  <div class="container">
+  <h2>Στόχος</h2>
+  <br>
+  <p>&nbsp;Σε αυτόν τον ιστοχώρο αναπτύσσονται εφαρμογές Πιθανοτήτων και Στατιστικής με στόχο την οπτικοποίηση εννοιών
+  του συγκεκριμένου επιστημονικού πεδίου.<br><br>
+  <h2>Συντελεστές</h2>
+  <br>&nbsp;Ο ιστοχώρος δημιουργήθηκε στα πλαίσια Πτυχιακής εργασίας κατά το χειμερινό εξάμηνο του
+  ακαδημαϊκού έτους 2021-2022 από τις φοιτήτριες, του <a href="https://www.di.uoa.gr/">Τμήματος Πληροφορικής και Τηλεπικοινωνιών (ΕΚΠΑ)</a>,
+  Μαρίνα Κονόμη(GITHUB!!!) και Άννα Λογοθέτη(GITHUB!!!) με επιβλέπουσα την καθηγήτρια Μαργαρίτα Καραλιοπούλου, μέλος του Εργαστηριακού Διδακτικού Προσωπικού
+  του <a href="https://www.math.uoa.gr/">Τμήματος Μαθηματικών (ΕΚΠΑ)</a> στον τομέα Στατιστικής και Επιχειρησιακής Έρευνας.
+  <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Σχεδιασμός Αρχικής Σελίδας</b>
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Μαρίνα Κονόμη-Άννα Λογοθέτη
+  <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Διάγραμμα Venn</b>
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Μαρίνα Κονόμη-Άννα Λογοθέτη
+  <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Θεώρημα Bayes</b>
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Μαρίνα Κονόμη
+  <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Κατανομές</b>
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Άννα Λογοθέτη
+  <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Έλεγχοι Υποθέσεων</b>
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Μαρίνα Κονόμη-Άννα Λογοθέτη
+  </p>
+  </div>
+
+ <br>
+ <br>
+
+  <footer class="w-100 py-4 flex-shrink-0" style="background-color: #DCDCDC;">
+    <div class="container py-4">
+      <div class="row gy-4 gx-5">
+          <div class="col-lg-4 col-md-6">
+              <h5 class="h2 text-white">Social Networks</h5>
+              <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+              <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved. <a class="text-primary" href="#">Bootstrapious.com</a></p>
+            </div>
+            <div class="col-lg-2 col-md-6">
+              <h5 class="h2 text-white">Επικοινωνία</h5>
+              <ul class="list-unstyled text-muted">
+                  <li><a href="#">Home</a></li>
+                  <li><a href="#">About</a></li>
+                  <li><a href="#">Get started</a></li>
+                  <li><a href="#">FAQ</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+</body>
+</html>
