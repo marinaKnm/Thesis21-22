@@ -63,7 +63,7 @@
           .attr("dy", "0.71em")
           .attr("fill", "#000");
 
-      canvas6.append("g")  // and create new points(circles) that respond to new exponential data
+      canvas6.append("g")
           .attr("id", "circles")
           .selectAll("circle")
           .data(exponDataset)
