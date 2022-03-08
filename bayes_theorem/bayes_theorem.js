@@ -104,7 +104,7 @@ $(document).ready(function () {
     //render graph of probabilities
     //////////////////////////////////////////////////////////////////////////////////
     //create the canvas that will render the graph
-    var container_width = $(".container").width();
+    var container_width = 1347.27;
     var tree_canvas = d3.select("#graph")
             .append("svg")
             .attr("width", container_width)
@@ -556,11 +556,11 @@ $(document).ready(function () {
         height: 450,
         stroke_width: 3
     }
-
+    console.log($(".container").width());
     //append a svg
     var svg = d3.select("#simulation")
       .append("svg")
-        .attr("width", $("#simulation").width())
+        .attr("width", 1347.27)
         .attr("height", myCanvas.height)
         .attr("id", "sim");
 
