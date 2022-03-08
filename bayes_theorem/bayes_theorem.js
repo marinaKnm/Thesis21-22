@@ -26,7 +26,7 @@ $(document).ready(function () {
     };
 
     var rec1 = {    //bottom rectangle
-        x: 54, //4
+        x: 54, 
         y: 4,
         width: 390,
         height: 390,
@@ -35,7 +35,7 @@ $(document).ready(function () {
 
 
     var rec3 = {    //this will be on top of rec1
-        x: 54,  //4
+        x: 54,  
         y: 4,
         width: 97.5,    //1/4 οf rec1s' width
         height: 390,
@@ -45,7 +45,7 @@ $(document).ready(function () {
 
     var rec2 = {    //this will be on top of rec1
         x: rec1.x + rec3.width,
-        y: 331.5, //
+        y: 331.5, 
         width: rec1.width - rec3.width,
         height: rec1.height - 331.5 + 3, // 15/100 of rec1s' height (plus 3 because of the stroke width)
         color: "#052783"
@@ -228,7 +228,6 @@ $(document).ready(function () {
             
         var node_tspans = node_texts
             .each(function(d) {
-                // console.log(d);
                 if(d.tag != undefined) {
                     var arr = d.tag.split("\n");
                     for(let i=0; i<arr.length; i++) {
