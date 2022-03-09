@@ -282,6 +282,12 @@
 
       //get values of independent variables
       var variables = $("#independent_var").val();
+      
+      if (variables === "") {
+        alert("Πρέπει να δώσετε τιμές δείγματος!");
+        return;
+      }
+
       variables = variables.split(/[ ]+/);  //splits string of values on white space
       n = variables.length;   //sample size
       variables = variables.map(Number);  //convert every string of number to number
@@ -319,7 +325,7 @@
         s = s / Math.pow(sigma0,2);
         
         //show test statistic and its value on page;
-        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{(χ_i-\\bar{χ})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
+        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{(Χ_i-\\bar{χ})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
         df = n-1;
         strdf = "Βαθμοί Ελευθερίας = n-1 = " + df;
         $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");

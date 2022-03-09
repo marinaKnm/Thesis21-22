@@ -26,7 +26,7 @@ $(document).ready(function () {
     };
 
     var rec1 = {    //bottom rectangle
-        x: 54, //4
+        x: 54, 
         y: 4,
         width: 390,
         height: 390,
@@ -35,7 +35,7 @@ $(document).ready(function () {
 
 
     var rec3 = {    //this will be on top of rec1
-        x: 54,  //4
+        x: 54,  
         y: 4,
         width: 97.5,    //1/4 οf rec1s' width
         height: 390,
@@ -45,7 +45,7 @@ $(document).ready(function () {
 
     var rec2 = {    //this will be on top of rec1
         x: rec1.x + rec3.width,
-        y: 331.5, //
+        y: 331.5, 
         width: rec1.width - rec3.width,
         height: rec1.height - 331.5 + 3, // 15/100 of rec1s' height (plus 3 because of the stroke width)
         color: "#052783"
@@ -104,7 +104,7 @@ $(document).ready(function () {
     //render graph of probabilities
     //////////////////////////////////////////////////////////////////////////////////
     //create the canvas that will render the graph
-    var container_width = $(".container").width();
+    var container_width = 1347.27;
     var tree_canvas = d3.select("#graph")
             .append("svg")
             .attr("width", container_width)
@@ -228,7 +228,6 @@ $(document).ready(function () {
             
         var node_tspans = node_texts
             .each(function(d) {
-                // console.log(d);
                 if(d.tag != undefined) {
                     var arr = d.tag.split("\n");
                     for(let i=0; i<arr.length; i++) {
@@ -557,11 +556,11 @@ $(document).ready(function () {
         height: 450,
         stroke_width: 3
     }
-
+    console.log($(".container").width());
     //append a svg
     var svg = d3.select("#simulation")
       .append("svg")
-        .attr("width", $("#simulation").width())
+        .attr("width", 1347.27)
         .attr("height", myCanvas.height)
         .attr("id", "sim");
 
