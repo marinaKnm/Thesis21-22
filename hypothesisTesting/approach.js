@@ -304,9 +304,9 @@
           s = s + Math.pow((variables[i] - avg), 2);
         }
         s = s / Math.pow(sigma0,2);
-
+        // &#xB2;&#8333;&#8345;&#8334;
         //show test statistic and its value on page
-        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{{(χ_i-μ)}^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
+        show_statFunction('$$ χ_n^2 = \\frac{\\sum\\limits_{i = 1}^n{{(x_i-μ)}^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
         df = n;
         var strdf = "Βαθμοί Ελευθερίας = n = " + df;
         $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
@@ -325,7 +325,7 @@
         s = s / Math.pow(sigma0,2);
         
         //show test statistic and its value on page;
-        show_statFunction('$$ χ&#xB2;&#8333;&#8345;&#8331;&#8321;&#8334; = \\frac{\\sum\\limits_{i = 1}^n{(Χ_i-\\bar{χ})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
+        show_statFunction('$$ χ_{n-1}^2 = \\frac{\\sum\\limits_{i = 1}^n{(x_i-\\bar{x})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
         df = n-1;
         strdf = "Βαθμοί Ελευθερίας = n-1 = " + df;
         $('#df').append('<p>'+ strdf +'</p>').css("margin", "auto");
@@ -351,34 +351,35 @@
       //conclude whether to reject or not the null hypothesis
       let flag=0;
       if(fill_const == 3) { 
-        descrc1 = "$$χ^2_{("+ type +")} \u2208 (0 , "+ crit_value_chi[0].toFixed(5) + "]\u222A[" + crit_value_chi[1].toFixed(5) + " , \u221E)$$";
+        descrc1 = "$$χ^2_{"+ type +"} \u2264 χ^2_{"+ type +"}(1-\\frac{α}{2})$$"+ "και" + "$$χ^2_{"+ type +"} \u2265 χ^2_{"+ type +"}(\\frac{α}{2})$$";
+        
         if (s<= crit_value_chi[0] || s>=crit_value_chi[1]) {  //reject null hypothesis
-          conclusion = "$$χ^2_{("+ type +")} \u2208 (0, " + crit_value_chi[0].toFixed(5) +"]\u222A["+ crit_value_chi[1].toFixed(5) +" , \u221E)$$";
+          conclusion = "$$χ^2_{"+ type +"} \u2208 (0, " + crit_value_chi[0].toFixed(5) +"]\u222A["+ crit_value_chi[1].toFixed(5) +" , \u221E)$$";
           flag = 1;
         } else {  
-          conclusion = "$$χ^2_{("+ type +")} \u2208 (" + crit_value_chi[0].toFixed(5) + " , " + crit_value_chi[1].toFixed(5) + ")" + "$$";
+          conclusion = "$$χ^2_{"+ type +"} \u2208 (" + crit_value_chi[0].toFixed(5) + " , " + crit_value_chi[1].toFixed(5) + ")" + "$$";
         }
       } else if(fill_const == 2) { 
-        descrc1 = "$$χ^2_{("+ type +")}\u2265 χ_{κρίσιμο σημείο}^2="+ crit_value_chi[0].toFixed(5) +"$$";
+        descrc1 = "$$χ^2_{"+ type +"}\u2265 χ_{"+ type +"}^2(α)="+ crit_value_chi[0].toFixed(5) +"$$";
         if (s >= crit_value_chi[0]) { //reject null hypothesis
-          conclusion = "$$χ^2_{("+ type +")} \u2208 [" + crit_value_chi[0].toFixed(5) + ", \u221E)$$";
+          conclusion = "$$χ^2_{"+ type +"} \u2208 [" + crit_value_chi[0].toFixed(5) + ", \u221E)$$";
           flag = 1;
         } else {
-          conclusion = "$$χ^2_{("+ type +")} \u2208 (0 , "+ crit_value_chi[0].toFixed(5) +")$$";
+          conclusion = "$$χ^2_{"+ type +"} \u2208 (0 , "+ crit_value_chi[0].toFixed(5) +")$$";
         }
       } else {
-        descrc1 = "$$χ^2_{("+ type +")}\u2264 χ_{κρίσιμο σημείο}^2="+ crit_value_chi[0].toFixed(5) +"$$";
+        descrc1 = "$$χ^2_{"+ type +"}\u2264 χ_{"+ type +"}^2(α)="+ crit_value_chi[0].toFixed(5) +"$$";
         if (s <= crit_value_chi[0]) { //reject null hypothesis
-          conclusion =  "$$χ^2_{("+ type +")}	\u2208 (0 , "+ crit_value_chi[0].toFixed(5) +" ]$$";
+          conclusion =  "$$χ^2_{"+ type +"}	\u2208 (0 , "+ crit_value_chi[0].toFixed(5) +" ]$$";
           flag = 1;
         } else {
-          conclusion = "$$χ^2_{("+ type +")}	\u2208 ("+ crit_value_chi[0].toFixed(5) +" , \u221E)$$";
+          conclusion = "$$χ^2_{"+ type +"}	\u2208 ("+ crit_value_chi[0].toFixed(5) +" , \u221E)$$";
         }
       }
       if (flag == 1) {
-        conclusion = "<p>Άρα, απορρίπτουμε την H₀</p>";
+        conclusion = conclusion + "<p>Άρα, απορρίπτουμε την H₀</p>";
       } else {
-        conclusion = "<p>Άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀</p>";
+        conclusion = conclusion + "<p>Άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀</p>";
       }
 
       div = document.getElementById('crit_value');
@@ -403,22 +404,22 @@
         let w;
         if (z_t > 0) w = (-1)*z_t; else w = z_t;
         descrp = "2\xD7P(X \u2264 "+ w +") = ";
-        descrc1 = type + " \u2264 -|"+ type +"<sub>κ.σ.</sub>|" + " ή " + type + " \u2265 |" + type + "<sub>κ.σ.</sub>|";
+        descrc1 = type + " \u2264 -"+ type +"<sub>α/2</sub>" + " ή " + type + " \u2265 " + type + "<sub>α/2</sub>";
       } else if (fill_const == 2) {
         descrp = "P(X \u2265 "+ z_t +") = ";
-        descrc1 = type + " \u2265 " + type + "<sub>κ.σ.</sub>";
+        descrc1 = type + " \u2265 " + type + "<sub>α</sub>";
       } else {
         descrp = "P(X \u2264 "+ z_t +") = ";
-        descrc1 = type + " \u2264 " + type + "<sub>κ.σ.</sub>";
+        descrc1 = type + " \u2264 " + type + "<sub>α</sub>";
       }
 
     //show p-value approach
     var xAxis_p = defineXaxis(z_t, fill_const, xScale, 1);
     var div = document.getElementById('p_value');
-    div.innerHTML += "<h4><strong>Προσέγγιση με p-τιμή</strong></h4>";
+    div.innerHTML += "<h4><strong>Προσέγγιση με p-value</strong></h4>";
     var svg1 = create_canvas("#p_value", xAxis_p, xScale, yScale, 1);
     if (pValue <= a) {  //H0 rejected
-      conclusion = "p-τιμή \u2264 α άρα, απορρίπτουμε την H₀";
+      conclusion = "p-value \u2264 α άρα, απορρίπτουμε την H₀";
       if (fill_const == 3) {
         conclusionc = type + "\u2208(-\u221E, -"+ Math.abs(crit_value).toFixed(5) + "]\u222A["+ Math.abs(crit_value).toFixed(5) +" , \u221E)";
       } else if (fill_const == 2) {
@@ -428,7 +429,7 @@
       }
       conclusionc = conclusionc + "<p>Άρα, απορρίπτουμε την H₀</p>";
     } else {
-      conclusion = "p-τιμή > α άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀";
+      conclusion = "p-value > α άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀";
       if (fill_const == 3) {
         conclusionc = type + "\u2208(-"+ Math.abs(crit_value).toFixed(5) +" , "+ Math.abs(crit_value).toFixed(5) + ")";
       } else if (fill_const == 2) {
@@ -438,7 +439,7 @@
       }
       conclusionc = conclusionc + "<p>Άρα, <em>δεν</em> έχουμε <em>επαρκή</em> στοιχεία για να απορρίψουμε την H₀";
     }
-    div.innerHTML = div.innerHTML + "<p>p-τιμή = " + descrp + (pValue.toFixed(5)) + "</p>";
+    div.innerHTML = div.innerHTML + "<p>p-value = " + descrp + (pValue.toFixed(5)) + "</p>";
     div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀" +" αν p-value "+"&#8804"+ " α</p>";
     div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusion + "</p>";
 
@@ -447,11 +448,11 @@
     var xAxis_c = defineXaxis((Math.round(crit_value*100)/100), fill_const, xScale, 1);
     div = document.getElementById('crit_value');
     var svg2 = create_canvas("#crit_value", xAxis_c, xScale, yScale, 1);
-    if (fill_const == 3) {
-      div.innerHTML = div.innerHTML + "<p>Κρίσιμα σημεία: -"+type+ "<sub>κ.σ.</sub> = " + ((-1)*Math.abs(crit_value)).toFixed(5) + "</p>";
-      div.innerHTML = div.innerHTML + "<p>και " +type+ "<sub>κ.σ.</sub> = " + (Math.abs(crit_value)).toFixed(5) + "</p>";
+    if (fill_const == 3) {/////////////////////////
+      div.innerHTML = div.innerHTML + "<p>Κρίσιμα σημεία: -"+type+ "<sub>α/2</sub> = " + ((-1)*Math.abs(crit_value)).toFixed(5) + "</p>";
+      div.innerHTML = div.innerHTML + "<p>και " +type+ "<sub>α/2</sub> = " + (Math.abs(crit_value)).toFixed(5) + "</p>";
     } else {
-      div.innerHTML = div.innerHTML + "<p>Κρίσιμο σημείο = "+type+ "<sub>κ.σ.</sub> = " + (crit_value.toFixed(5)) + "</p>";
+      div.innerHTML = div.innerHTML + "<p>Κρίσιμο σημείο = "+type+ "<sub>α</sub> = " + (crit_value.toFixed(5)) + "</p>";
     }
     div.innerHTML = div.innerHTML + "<p>Κανόνας Απόρριψης: Απόρριψε την " +"H₀ αν " + descrc1+ "</p>";
     div.innerHTML = div.innerHTML + "<h4><strong>Συμπέρασμα:</strong></h4><p>" + conclusionc + "</p>";
