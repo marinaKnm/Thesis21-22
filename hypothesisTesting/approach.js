@@ -259,6 +259,10 @@
         $('#crit_value').empty();
         return;
       }
+      if (n <= 30) {
+        alert("Το μέγεθος δείγματος (n) πρέπει να είναι μεγαλύτερο του 30.");
+        return;
+      }
       $('#perfomance').empty();
       type = 'z';
       //calculate value
@@ -282,7 +286,7 @@
 
       //get values of independent variables
       var variables = $("#independent_var").val();
-      
+
       if (variables === "") {
         alert("Πρέπει να δώσετε τιμές δείγματος!");
         return;
@@ -323,7 +327,7 @@
           s = s + Math.pow((variables[i] - avg), 2);
         }
         s = s / Math.pow(sigma0,2);
-        
+
         //show test statistic and its value on page;
         show_statFunction('$$ χ_{n-1}^2 = \\frac{\\sum\\limits_{i = 1}^n{(x_i-\\bar{x})^2}} {σ₀&#xB2;} = ' + s.toFixed(5) + '$$');
         df = n-1;
@@ -350,16 +354,16 @@
 
       //conclude whether to reject or not the null hypothesis
       let flag=0;
-      if(fill_const == 3) { 
+      if(fill_const == 3) {
         descrc1 = "$$χ^2_{"+ type +"} \u2264 χ^2_{"+ type +"}(1-\\frac{α}{2})$$"+ "και" + "$$χ^2_{"+ type +"} \u2265 χ^2_{"+ type +"}(\\frac{α}{2})$$";
-        
+
         if (s<= crit_value_chi[0] || s>=crit_value_chi[1]) {  //reject null hypothesis
           conclusion = "$$χ^2_{"+ type +"} \u2208 (0, " + crit_value_chi[0].toFixed(5) +"]\u222A["+ crit_value_chi[1].toFixed(5) +" , \u221E)$$";
           flag = 1;
-        } else {  
+        } else {
           conclusion = "$$χ^2_{"+ type +"} \u2208 (" + crit_value_chi[0].toFixed(5) + " , " + crit_value_chi[1].toFixed(5) + ")" + "$$";
         }
-      } else if(fill_const == 2) { 
+      } else if(fill_const == 2) {
         descrc1 = "$$χ^2_{"+ type +"}\u2265 χ_{"+ type +"}^2(α)="+ crit_value_chi[0].toFixed(5) +"$$";
         if (s >= crit_value_chi[0]) { //reject null hypothesis
           conclusion = "$$χ^2_{"+ type +"} \u2208 [" + crit_value_chi[0].toFixed(5) + ", \u221E)$$";

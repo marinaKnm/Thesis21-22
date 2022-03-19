@@ -271,6 +271,49 @@
 
   <br>
 
+  <div class="panel">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" href="#collapse7" style = "text-decoration: none;" class = "button button7" type="button">Normal</a>
+      </h4>
+    <div id="collapse7" class="panel-collapse collapse">
+      <div id="panel7" class="panel-body">
+
+        <div id=miDiv>
+          <p id=miValDisplay></p>
+          <input id="miSlider" class="paramSlider" type="range" value="0" step="0.002" min="-10" max="10" >
+        </div>
+        <div id=sig>
+          <p id=sigvalue></p>
+          <input id="sigSlider" class="paramSlider" type="range" value="1" step="0.002" min="0.01" max="5">
+        </div>
+
+        <script src="normal.js"></script>
+        <br>
+        <br>
+        <div>
+          <table style="width:50%">
+            <tr>
+                <td style="color:#696969">Κατανομή</td>
+                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
+                <td style="color:#696969">Μέσος</td>
+                <td style="color:#696969">Διασπορά</td>
+            </tr>
+            <tr>
+                <td style="color:#00008B">Normal</td>
+                <td>\( f(x;\mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^{2}}} e^{-\dfrac{(x-\mu)^{2}}{2\sigma^{2}}}\), \(x\in\mathbb{R}\)</td>
+                <td>\(\mu\)</td>
+                <td>\(\sigma^{2}\)</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <br>
+
 	<div class="panel">
 			<h4 class="panel-title">
 				<a data-toggle="collapse" href="#collapse2" style = "text-decoration: none;" class = "button button2" type="button">Student</a>
@@ -385,49 +428,6 @@
                 <td>\( f(x;\lambda) = \begin{cases} \lambda e^{-\lambda x} & \text{αν } x \geq 0 \\ 0 & \text{αλλιώς} \end{cases} \)</td>
                 <td>\(\frac{1}{\lambda}\)</td>
                 <td>\(\frac{1}{\lambda^{2}}\)</td>
-            </tr>
-          </table>
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <br>
-
-  <div class="panel">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" href="#collapse7" style = "text-decoration: none;" class = "button button7" type="button">Normal</a>
-      </h4>
-    <div id="collapse7" class="panel-collapse collapse">
-      <div id="panel7" class="panel-body">
-
-        <div id=miDiv>
-          <p id=miValDisplay></p>
-          <input id="miSlider" class="paramSlider" type="range" value="0" step="0.002" min="-10" max="10" >
-        </div>
-        <div id=sig>
-          <p id=sigvalue></p>
-          <input id="sigSlider" class="paramSlider" type="range" value="1" step="0.002" min="0.01" max="5">
-        </div>
-
-        <script src="normal.js"></script>
-        <br>
-        <br>
-        <div>
-          <table style="width:50%">
-            <tr>
-                <td style="color:#696969">Κατανομή</td>
-                <td style="color:#696969">Συνάρτηση Πυκνότητας Πιθανότητας</td>
-                <td style="color:#696969">Μέσος</td>
-                <td style="color:#696969">Διασπορά</td>
-            </tr>
-            <tr>
-                <td style="color:#00008B">Normal</td>
-                <td>\( f(x;\mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^{2}}} e^{-\dfrac{(x-\mu)^{2}}{2\sigma^{2}}}\), \(x\in\mathbb{R}\)</td>
-                <td>\(\mu\)</td>
-                <td>\(\sigma^{2}\)</td>
             </tr>
           </table>
 
