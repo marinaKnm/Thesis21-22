@@ -1,13 +1,19 @@
-## Εργαλεία που χρησιμοποιούνται
-* HTML: για το σκελετό της σελίδας.
-* CSS: για την εμφάνιση της σελίδας.
+# Design and Implementation of website in the field of Probabilities and Statistics 
+* website found at http://probstat.di.uoa.gr/
+* this website was developed as part of a thesis and was made for educational purposes
+
+## Tools used during implementation
+* HTM
+* CSS
 * Javascript: για τη λειτουργικότητα της σελίδας.
-* Jquery:  βιβλιοθήκη της Javascript για τη διαδραστικότητα της σελίδας.
-* D3.js: βιβλιοθήκη της Javascript για τη σύνδεση δεδομένων με στοιχεία της ιστοσελίδας.
-* rangeslider: Βιβλιοθήκη της Javascript.
-* jStat: Βιβλιοθήκη στατιστικής της Javascript.
-* Bootstrap: για τον σχεδιασμό του front end του ιστοχώρου.
-* MathJax: για την γραφή μαθηματικών τύπων.
+* Jquery (Javascript library)
+* D3.js (Javascript library)
+* rangeslider (Javascript library)
+* jStat (Javascript library for statistics)
+* Bootstrap
+* MathJax
+
+# Applications
 
 ## Διάγραμμα Venn
 * Ο χρήστης εισάγει μία πρόταση με πράξεις συνόλων πάνω σε δύο σύνολα και χρωματίζεται το αντίστοιχο χωρίο. Σε περίπτωση που η πρόταση δεν είναι συντακτικά σωστή θα εμφανιστεί μήνυμα λάθους για κάποια δευτερόλεπτα.
