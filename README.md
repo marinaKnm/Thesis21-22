@@ -5,7 +5,7 @@
 ## Tools used during implementation
 * HTM
 * CSS
-* Javascript: για τη λειτουργικότητα της σελίδας.
+* Javascript
 * Jquery (Javascript library)
 * D3.js (Javascript library)
 * rangeslider (Javascript library)
