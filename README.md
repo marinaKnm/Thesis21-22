@@ -3,7 +3,7 @@
 * this website was developed as part of a thesis and was made for educational purposes
 
 ## Tools used during implementation
-* HTM
+* HTML
 * CSS
 * Javascript
 * Jquery (Javascript library)
